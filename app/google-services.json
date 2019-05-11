@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "281745014802",
+    "firebase_url": "https://expensetrackingsystem-bf6e5.firebaseio.com",
+    "project_id": "expensetrackingsystem-bf6e5",
+    "storage_bucket": "expensetrackingsystem-bf6e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281745014802:android:733d635e5cc04d70",
+        "android_client_info": {
+          "package_name": "com.example.srivi.expensetrackingsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281745014802-d59srh4h1voq7jtu0eapp8ali3n3j8md.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.srivi.expensetrackingsystem",
+            "certificate_hash": "8614ca900399189871dd694a4f3af12a2db24c2c"
+          }
+        },
+        {
+          "client_id": "281745014802-hto88n3q16cgfc312uq2gkkhachj6u1b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgfkVqXvz4qmmD5mmqKhHSPmfkCfzseio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281745014802-hto88n3q16cgfc312uq2gkkhachj6u1b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
