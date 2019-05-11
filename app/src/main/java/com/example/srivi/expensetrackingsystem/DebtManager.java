@@ -189,6 +189,7 @@ public class DebtManager extends Fragment {
 
     private void showMessage(String message, DialogInterface.OnClickListener okListener, String btn) {
         new AlertDialog.Builder(getActivity())
+                .setCancelable(false)
                 .setTitle("PERMISSION REQUIRED")
                 .setMessage(message)
                 .setPositiveButton(btn, okListener)
