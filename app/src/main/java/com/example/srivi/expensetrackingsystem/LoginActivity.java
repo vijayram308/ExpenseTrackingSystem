@@ -30,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.StatsColor));
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         firebaseAuth = FirebaseAuth.getInstance();
         final EditText loginEmailId = findViewById(R.id.email);
         final EditText logInpasswd = findViewById(R.id.pass);
