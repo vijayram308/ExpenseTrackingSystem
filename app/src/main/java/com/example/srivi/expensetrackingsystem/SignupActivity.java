@@ -29,6 +29,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.StatsColor));
         firebaseAuth = FirebaseAuth.getInstance();
         this.setTitle("Registration");
         final EditText emailId = findViewById(R.id.signup_email);
