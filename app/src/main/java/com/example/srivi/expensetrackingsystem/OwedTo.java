@@ -1,10 +1,12 @@
 package com.example.srivi.expensetrackingsystem;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -126,72 +128,93 @@ public class OwedTo extends Fragment {
         cursor.close();
     }
     protected void showInputDialog() {
-        // get prompts.xml view
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        View promptView = layoutInflater.inflate(R.layout.dialog, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-        alertDialogBuilder.setView(promptView);
-        alertDialogBuilder.setTitle("New Entry");
-        final EditText nm = promptView.findViewById(R.id.dialog_nm);
-        final EditText ph = promptView.findViewById(R.id.dialog_ph);
-        nm.setText(contactName);
-        ph.setText(contactNum);
-        nm.setEnabled(false);
-        ph.setEnabled(false);
-        final EditText amn = (EditText) promptView.findViewById(R.id.dialog_amn);
 
-        // setup a dialog window
-        alertDialogBuilder.setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        String amn_txt=amn.getText().toString();
-                        if(amn_txt.isEmpty())
-                            Toast.makeText(getContext(), "Amount field cannot be left empty", Toast.LENGTH_SHORT).show();
-                        else {
-                            final Debt d = new Debt(nm.getText().toString(), amn.getText().toString(), ph.getText().toString());
-                            (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.child(d.ph_no).exists()) {
-                                        float x = Float.parseFloat(dataSnapshot.child(d.ph_no).child("amount").getValue().toString());
-                                        x += Float.parseFloat(d.amount);
-                                        myRef.child(uid).child("Debt").child(d.ph_no).child("amount").setValue(x);
-                                        if (x < 0) {
-                                            x *= -1;
-                                            Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
-                                        } else if (x > 0)
-                                            Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
-                                        else {
-                                            myRef.child(uid).child("Debt").child(d.ph_no).getRef().removeValue();
+        if(contactNum == null){
+            showMessage("A contact without phone number cannot be added !!",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            },"OK");
+        }
+        else {
+            LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+            View promptView = layoutInflater.inflate(R.layout.dialog, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+            alertDialogBuilder.setView(promptView);
+            alertDialogBuilder.setTitle("New Entry");
+            final EditText nm = promptView.findViewById(R.id.dialog_nm);
+            final EditText ph = promptView.findViewById(R.id.dialog_ph);
+            nm.setText(contactName);
+
+            ph.setText(contactNum);
+            nm.setEnabled(false);
+            ph.setEnabled(false);
+            final EditText amn = (EditText) promptView.findViewById(R.id.dialog_amn);
+
+            // setup a dialog window
+            alertDialogBuilder.setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            String amn_txt = amn.getText().toString();
+                            if (amn_txt.isEmpty())
+                                Toast.makeText(getContext(), "Amount field cannot be left empty", Toast.LENGTH_SHORT).show();
+                            else {
+                                final Debt d = new Debt(nm.getText().toString(), amn.getText().toString(), ph.getText().toString());
+                                (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (dataSnapshot.child(d.ph_no).exists()) {
+                                            float x = Float.parseFloat(dataSnapshot.child(d.ph_no).child("amount").getValue().toString());
+                                            x += Float.parseFloat(d.amount);
+                                            myRef.child(uid).child("Debt").child(d.ph_no).child("amount").setValue(x);
+                                            if (x < 0) {
+                                                x *= -1;
+                                                Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
+                                            } else if (x > 0)
+                                                Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
+                                            else {
+                                                myRef.child(uid).child("Debt").child(d.ph_no).getRef().removeValue();
+                                            }
+                                        } else {
+                                            myRef.child(uid).child("Debt").child(d.ph_no).setValue(d);
+                                            myRef.push();
+                                            Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
                                         }
-                                    } else {
-                                        myRef.child(uid).child("Debt").child(d.ph_no).setValue(d);
-                                        myRef.push();
-                                        Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
+                                        Fragment fragment = new DebtManager();
+                                        FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                                        ft.replace(R.id.content_frame, fragment);
+                                        ft.commit();
                                     }
-                                    Fragment fragment = new DebtManager();
-                                    FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
-                                    ft.replace(R.id.content_frame, fragment);
-                                    ft.commit();
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
+                            }
+                        }
+                    })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
                                 }
                             });
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
 
-        // create an alert dialog
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
+            // create an alert dialog
+            AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
+        }
+    }
+
+    private void showMessage(String message, DialogInterface.OnClickListener okListener, String btn) {
+        new android.support.v7.app.AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle("MISSING CONTACT NUMBER")
+                .setMessage(message)
+                .setPositiveButton(btn, okListener)
+                .create()
+                .show();
     }
 
     public void callList(View v){
