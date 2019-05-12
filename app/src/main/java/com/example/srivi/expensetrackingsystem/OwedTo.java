@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -219,12 +220,22 @@ public class OwedTo extends Fragment {
 
     public void callList(View v){
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.owedto_list);
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rv.setLayoutManager(llm);
-        DebtAdapter ca = new DebtAdapter(debtList,v.getContext(),0);
-        rv.setAdapter(ca);
+        TextView tv = (TextView) v.findViewById(R.id.no_entry);
+        if(!(debtList.isEmpty())) {
+            LinearLayoutManager llm = new LinearLayoutManager(getContext());
+            llm.setOrientation(LinearLayoutManager.VERTICAL);
+            rv.setLayoutManager(llm);
+            DebtAdapter ca = new DebtAdapter(debtList, v.getContext(), 0);
+            rv.setAdapter(ca);
+            rv.setVisibility(View.VISIBLE);
+            tv.setVisibility(View.GONE);
+        }
+        else{
+            rv.setVisibility(View.GONE);
+            tv.setVisibility(View.VISIBLE);
+        }
     }
+
     public void createList(final View v) {
         debtList.clear();
         (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -240,8 +251,7 @@ public class OwedTo extends Fragment {
                         debtList.add(new Debt(name, amount, ph));
                     }
                 }
-                if(!(debtList.isEmpty()))
-                    callList(v);
+                callList(v);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
