@@ -72,11 +72,20 @@ public class History extends Fragment {
     }
     private void callList(View v, int d[]){
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.cards);
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rv.setLayoutManager(llm);
-        HistoryAdapter ca = new HistoryAdapter(historyList, d, getContext());
-        rv.setAdapter(ca);
+        TextView tv = (TextView) v.findViewById(R.id.no_history);
+        if(!(historyList.isEmpty())) {
+            LinearLayoutManager llm = new LinearLayoutManager(getContext());
+            llm.setOrientation(LinearLayoutManager.VERTICAL);
+            rv.setLayoutManager(llm);
+            HistoryAdapter ca = new HistoryAdapter(historyList, d, getContext());
+            rv.setAdapter(ca);
+            rv.setVisibility(View.VISIBLE);
+            tv.setVisibility(View.GONE);
+        }
+        else{
+            rv.setVisibility(View.GONE);
+            tv.setVisibility(View.VISIBLE);
+        }
     }
     private void createList(final View v) {
         (myRef.child(uid).child("history")).addListenerForSingleValueEvent(new ValueEventListener() {
