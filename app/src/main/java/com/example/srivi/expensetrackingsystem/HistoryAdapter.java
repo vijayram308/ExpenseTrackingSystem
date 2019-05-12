@@ -55,7 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         if(c.pay_mode.equals("Wallet")) {
-            builder.append(" ").append(" ", new ImageSpan(con, R.drawable.ic_wallet_icon), 0).append("  " + c.pay_mode);
+            builder.append(" ").append(" ", new ImageSpan(con, R.drawable.ic_wallet1), 0).append("  " + c.pay_mode);
         }
         else {
             builder.append(" ").append(" ", new ImageSpan(con, R.drawable.ic_menu_bank), 0).append("  " + c.pay_mode);
