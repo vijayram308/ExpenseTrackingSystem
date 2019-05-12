@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,9 +58,11 @@ public class OwedBy extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v=inflater.inflate(R.layout.tab_owedby, container, false);
+        final ConstraintLayout c = v.findViewById(R.id.owedby_main);
+        c.setVisibility(v.GONE);
         Button b = (Button) v.findViewById(R.id.btn_owedby);
 
-        createList(v);
+        createList(v,c);
 
         b.setOnClickListener(new View.OnClickListener() {
 
@@ -241,8 +246,9 @@ public class OwedBy extends Fragment {
             tv.setVisibility(View.VISIBLE);
         }
     }
-    private void createList(final View v) {
+    private void createList(final View v, final ConstraintLayout c) {
         debtList.clear();
+        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_dby);
         (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -258,6 +264,8 @@ public class OwedBy extends Fragment {
                     }
                 }
                 callList(v);
+                c.setVisibility(v.VISIBLE);
+                pgsBar.setVisibility(v.GONE);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

@@ -3,6 +3,7 @@ package com.example.srivi.expensetrackingsystem;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -38,9 +40,12 @@ public class History extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View v=inflater.inflate(R.layout.frag_history, container, false);
+        ConstraintLayout c = v.findViewById(R.id.his_main);
+
+        c.setVisibility(v.GONE);
         //TextView tv = v.findViewById(R.id.typ1);
         //tv.setBackgroundColor(Color.parseColor("#696969"));
-        createList(v);
+        createList(v,c);
         return v;
     }
 
@@ -87,7 +92,8 @@ public class History extends Fragment {
             tv.setVisibility(View.VISIBLE);
         }
     }
-    private void createList(final View v) {
+    private void createList(final View v, final ConstraintLayout c) {
+        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_h);
         (myRef.child(uid).child("history")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -115,6 +121,8 @@ public class History extends Fragment {
                     historyList.add(new Transaction(pay_md, typ, amn, des, d));
                 }
                 callList(v, d1);
+                c.setVisibility(v.VISIBLE);
+                pgsBar.setVisibility(v.GONE);
             }
 
             @Override

@@ -2,16 +2,17 @@ package com.example.srivi.expensetrackingsystem;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -44,14 +45,15 @@ public class UpdateBalance extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View v=inflater.inflate(R.layout.frag_upd, container, false);
+        final ConstraintLayout c = v.findViewById(R.id.upd_main);
+        c.setVisibility(v.GONE);
         final Spinner pm= (Spinner) v.findViewById(R.id.pay_mode);
-        createList(pm,v);
+        createList(pm,v,c);
 
         final Spinner typ = (Spinner) v.findViewById(R.id.type);
         final EditText as= (EditText) v.findViewById(R.id.amount);
         final EditText dsc= (EditText) v.findViewById(R.id.desc);
         Button b=(Button) v.findViewById(R.id.sub);
-
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this.getActivity(),
                 R.array.type, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -93,7 +95,7 @@ public class UpdateBalance extends Fragment {
                                     Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
-                                    createList(pm,v);
+                                    createList(pm,v,c);
                                 }
                             }
 
@@ -114,7 +116,7 @@ public class UpdateBalance extends Fragment {
                                 Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
                                 as.getText().clear();
                                 dsc.getText().clear();
-                                createList(pm,v);
+                                createList(pm,v,c);
                             }
 
                             @Override
@@ -136,9 +138,10 @@ public class UpdateBalance extends Fragment {
         BankAdapter ca = new BankAdapter(bankList);
         rv.setAdapter(ca);
     }
-    private void createList(final Spinner pm, final View v) {
+    private void createList(final Spinner pm, final View v, final ConstraintLayout c) {
         bankList.clear();
         pay_spinnerList.clear();
+        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_upd);
         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -158,6 +161,9 @@ public class UpdateBalance extends Fragment {
                 ArrayAdapter<String> payAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_spinner_item, pay_spinnerList);
                 payAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 pm.setAdapter(payAdapter);
+                c.setVisibility(v.VISIBLE);
+                pgsBar.setVisibility(v.GONE);
+
             }
 
             @Override
