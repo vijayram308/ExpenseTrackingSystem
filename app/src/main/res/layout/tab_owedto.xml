@@ -39,7 +39,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="Nobody owes you money!!"
+        android:text="No dues"
         android:textAllCaps="true"
         android:textSize="14sp"
         android:textStyle="bold"

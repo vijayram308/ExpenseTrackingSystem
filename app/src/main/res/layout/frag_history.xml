@@ -24,7 +24,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="Your Transaction History is empty"
+        android:text="No Transactions to display"
         android:textAllCaps="true"
         android:textStyle="bold"
         card_view:layout_constraintEnd_toEndOf="parent"
