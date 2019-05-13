@@ -182,6 +182,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_dues:
                 fragment= new DebtManager();
                 break;
+            case R.id.nav_logout:
+                FirebaseAuth.getInstance().signOut();
+                Intent I=new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(I);
             /*case R.id.nav_share:
                 break;*/
         }
