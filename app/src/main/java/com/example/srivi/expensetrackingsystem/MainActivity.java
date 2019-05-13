@@ -182,8 +182,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_dues:
                 fragment= new DebtManager();
                 break;
-            case R.id.nav_share:
-                break;
+            /*case R.id.nav_share:
+                break;*/
         }
 
         //replacing the fragment
