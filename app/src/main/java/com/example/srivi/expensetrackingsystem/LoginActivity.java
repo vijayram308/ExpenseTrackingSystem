@@ -51,7 +51,9 @@ public class LoginActivity extends AppCompatActivity {
                 final EditText et = promptView.findViewById(R.id.forgot_email);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
                 alertDialogBuilder.setView(promptView);
-                alertDialogBuilder.setPositiveButton("Ok",
+                alertDialogBuilder.setTitle("Forgot Password");
+                alertDialogBuilder.setCancelable(false)
+                        .setPositiveButton("Reset Password",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 FirebaseAuth.getInstance().sendPasswordResetEmail(et.getText().toString())
@@ -59,19 +61,16 @@ public class LoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Log.d("YYYYY", "Email sent.");
+                                                Toast.makeText(LoginActivity.this,"Check your email to reset the password",Toast.LENGTH_LONG).show();
                                             }
+                                            else
+                                                Toast.makeText(LoginActivity.this,"The entered Email ID is not registered",Toast.LENGTH_LONG).show();
                                         }
                                     });
                             }
-                        })
-                        .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
                         });
-
+                AlertDialog alert = alertDialogBuilder.create();
+                alert.show();
             }
         });
 
