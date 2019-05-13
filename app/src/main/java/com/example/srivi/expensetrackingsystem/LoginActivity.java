@@ -1,9 +1,13 @@
 package com.example.srivi.expensetrackingsystem;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,6 +41,39 @@ public class LoginActivity extends AppCompatActivity {
         final EditText logInpasswd = findViewById(R.id.pass);
         Button btnLogIn = findViewById(R.id.login_btn);
         TextView signup= findViewById(R.id.sign_up);
+        TextView forgotPass = findViewById(R.id.forgot_pass);
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater layoutInflater = LayoutInflater.from(LoginActivity.this);
+                View promptView = layoutInflater.inflate(R.layout.forgot_pass, null);
+                final EditText et = promptView.findViewById(R.id.forgot_email);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                alertDialogBuilder.setView(promptView);
+                alertDialogBuilder.setPositiveButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                FirebaseAuth.getInstance().sendPasswordResetEmail(et.getText().toString())
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("YYYYY", "Email sent.");
+                                            }
+                                        }
+                                    });
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+            }
+        });
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
