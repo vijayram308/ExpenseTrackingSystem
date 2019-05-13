@@ -180,15 +180,6 @@ public class DebtManager extends Fragment {
         }
     }
 
-    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Fragment fragment = new DebtManager();
-        FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
-
-        ft.replace(R.id.content_frame, fragment);
-        ft.commit();
-    }*/
-
     private void showMessage(String message, DialogInterface.OnClickListener okListener, String btn) {
         new AlertDialog.Builder(getActivity())
                 .setCancelable(false)

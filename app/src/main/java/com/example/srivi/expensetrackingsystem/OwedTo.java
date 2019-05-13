@@ -4,14 +4,18 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -59,20 +64,30 @@ public class OwedTo extends Fragment {
     String contactName = null;
     String contactNum = null;
 
+    private static final int PERMISSION_REQUEST_CODE = 0;
+    CheckBox cb;
+    EditText nm;
+    EditText ph;
+    EditText amn;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.tab_owedto, container, false);
         final ConstraintLayout c = v.findViewById(R.id.owedto_main);
         c.setVisibility(v.GONE);
-        Button b = (Button) v.findViewById(R.id.btn_owedto);
-        createList(v,c);
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
+            Button b = (Button) v.findViewById(R.id.btn_owedto);
+            createList(v, c);
+            int ch=0;
+            if(getActivity().getIntent().hasExtra("openDialog"))
+                ch = getActivity().getIntent().getExtras().getInt("openDialog");
+            if(ch==1){
+                showInputDialog();
             }
-        });
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
+                }
+            });
         return v;
     }
 
@@ -136,7 +151,7 @@ public class OwedTo extends Fragment {
     }
     protected void showInputDialog() {
 
-        if(contactNum == null){
+        if((contactNum == null)&&(!(getActivity().getIntent().hasExtra("nmVal")))){
             showMessage("A contact without phone number cannot be added !!",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -149,16 +164,36 @@ public class OwedTo extends Fragment {
             View promptView = layoutInflater.inflate(R.layout.dialog, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
             alertDialogBuilder.setView(promptView);
+            cb = promptView.findViewById(R.id.sms_send);
             alertDialogBuilder.setTitle("New Entry");
-            final EditText nm = promptView.findViewById(R.id.dialog_nm);
-            final EditText ph = promptView.findViewById(R.id.dialog_ph);
-            nm.setText(contactName);
-
-            ph.setText(contactNum);
-            nm.setEnabled(false);
-            ph.setEnabled(false);
-            final EditText amn = (EditText) promptView.findViewById(R.id.dialog_amn);
-
+            nm = promptView.findViewById(R.id.dialog_nm);
+            ph = promptView.findViewById(R.id.dialog_ph);
+            amn = (EditText) promptView.findViewById(R.id.dialog_amn);
+            if(getActivity().getIntent().hasExtra("nmVal")) {
+                nm.setText(getActivity().getIntent().getExtras().getString("nmVal"));
+                nm.setEnabled(false);
+                ph.setText(getActivity().getIntent().getExtras().getString("phVal"));
+                ph.setEnabled(false);
+                amn.setText(getActivity().getIntent().getExtras().getString("amnVal"));
+                cb.setChecked(true);
+                getActivity().getIntent().removeExtra("nmVal");
+                getActivity().getIntent().removeExtra("phVal");
+                getActivity().getIntent().removeExtra("amnVal");
+                getActivity().getIntent().removeExtra("openDialog");
+            }
+            else {
+                nm.setText(contactName);
+                ph.setText(contactNum);
+                nm.setEnabled(false);
+                ph.setEnabled(false);
+            }
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!checkPermission())
+                        requestPermission();
+                }
+            });
             // setup a dialog window
             alertDialogBuilder.setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -178,19 +213,27 @@ public class OwedTo extends Fragment {
                                             myRef.child(uid).child("Debt").child(d.ph_no).child("amount").setValue(x);
                                             if (x < 0) {
                                                 x *= -1;
-                                                Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
-                                                /*try {
-                                                    smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
-                                                } catch (Exception e) {
-                                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                                                }*/
+                                                if(cb.isChecked()) {
+                                                    try {
+                                                        smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
+                                                        Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
+                                                    } catch (Exception e) {
+                                                        Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                                else
+                                                    Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
                                             } else if (x > 0) {
-                                                Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
-                                                /*try {
-                                                    smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
-                                                } catch (Exception e) {
-                                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                                                }*/
+                                                if(cb.isChecked()){
+                                                    try {
+                                                        smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
+                                                        Toast.makeText(getContext(), d.name + " owes you Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
+                                                    } catch (Exception e) {
+                                                        Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                                else
+                                                    Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
                                             }
                                             else {
                                                 myRef.child(uid).child("Debt").child(d.ph_no).getRef().removeValue();
@@ -198,12 +241,16 @@ public class OwedTo extends Fragment {
                                         } else {
                                             myRef.child(uid).child("Debt").child(d.ph_no).setValue(d);
                                             myRef.push();
-                                            Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
-                                            /*try {
-                                                smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
-                                            } catch (Exception e) {
-                                                Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                                            }*/
+                                            if(cb.isChecked()) {
+                                                try {
+                                                    smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
+                                                    Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount +". SMS sent", Toast.LENGTH_SHORT).show();
+                                                } catch (Exception e) {
+                                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                            else
+                                                Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
                                         }
                                         Fragment fragment = new DebtManager();
                                         FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
@@ -215,17 +262,6 @@ public class OwedTo extends Fragment {
                                     public void onCancelled(DatabaseError databaseError) {
                                     }
                                 });
-                                /*try{
-                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                    i.setData(Uri.parse("smsto:"));
-                                    i.setType("vnd.android-dir/mms-sms");
-                                    i.putExtra("address", new String(txtMobile.getText().toString()));
-                                    i.putExtra("sms_body",txtMessage.getText().toString());
-                                    startActivity(Intent.createChooser(i, "Send sms via:"));
-                                }
-                                catch(Exception e){
-                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
-                                }*/
                             }
                         }
                     })
@@ -240,6 +276,114 @@ public class OwedTo extends Fragment {
             AlertDialog alert = alertDialogBuilder.create();
             alert.show();
         }
+    }
+
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_CODE);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+                    boolean accepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    if (accepted){
+                    }
+                    else {
+                        Toast.makeText(getContext(),"Permission Denied",Toast.LENGTH_LONG).show();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS)) {
+                                showMessageOkCancel("To send SMS, you have to allow the SMS permission.\n\nPlease allow this permission for sending text messages.",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermissions(new String[]{Manifest.permission.SEND_SMS},
+                                                            PERMISSION_REQUEST_CODE);
+                                                }
+                                            }
+                                        },
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                cb.setChecked(false);
+                                                dialogInterface.cancel();
+                                            }
+                                        }
+                                        ,"OK");
+                                return;
+                            }
+                            else
+                            {
+                                showMessageOkCancel("To send SMS, you have to allow the SMS permission.\n\nYou can click on the Settings button below or manually navigate to the App Settings and allow this permission. ",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    final Handler handler = new Handler();
+
+                                                    Runnable checkSettingOn = new Runnable() {
+
+                                                        @Override
+                                                        //@TargetApi(23)
+                                                        public void run() {
+                                                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                                                                return;
+                                                            }
+                                                            if (checkPermission()) {
+                                                                Intent i = new Intent(getActivity(), MainActivity.class);
+                                                                i.putExtra("frgToLoad", 1);
+                                                                i.putExtra("openDialog", 1);
+                                                                i.putExtra("nmVal", nm.getText().toString());
+                                                                i.putExtra("phVal", ph.getText().toString());
+                                                                i.putExtra("amnVal", amn.getText().toString());
+                                                                startActivity(i);
+                                                                return;
+                                                            }
+                                                            handler.postDelayed(this, 200);
+                                                        }
+                                                    };
+                                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                                    Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                                                    intent.setData(uri);
+                                                    handler.postDelayed(checkSettingOn, 1000);
+                                                    startActivityForResult(intent, PERMISSION_REQUEST_CODE);
+                                                }
+                                            }
+                                        },
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                cb.setChecked(false);
+                                                dialogInterface.cancel();
+                                            }
+                                        }
+                                        , "Settings");
+                                return;
+                            }
+                        }
+
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOkCancel(String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String btn) {
+        new android.support.v7.app.AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle("PERMISSION REQUIRED")
+                .setMessage(message)
+                .setPositiveButton(btn, okListener)
+                .setNegativeButton("Cancel",cancelListener)
+                .create()
+                .show();
     }
 
     private void showMessage(String message, DialogInterface.OnClickListener okListener, String btn) {
