@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -166,6 +167,7 @@ public class OwedTo extends Fragment {
                             if (amn_txt.isEmpty())
                                 Toast.makeText(getContext(), "Amount field cannot be left empty", Toast.LENGTH_SHORT).show();
                             else {
+                                final SmsManager smgr = SmsManager.getDefault();
                                 final Debt d = new Debt(nm.getText().toString(), amn.getText().toString(), ph.getText().toString());
                                 (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -177,8 +179,19 @@ public class OwedTo extends Fragment {
                                             if (x < 0) {
                                                 x *= -1;
                                                 Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
-                                            } else if (x > 0)
+                                                /*try {
+                                                    smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
+                                                } catch (Exception e) {
+                                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                                }*/
+                                            } else if (x > 0) {
                                                 Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
+                                                /*try {
+                                                    smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
+                                                } catch (Exception e) {
+                                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                                }*/
+                                            }
                                             else {
                                                 myRef.child(uid).child("Debt").child(d.ph_no).getRef().removeValue();
                                             }
@@ -186,6 +199,11 @@ public class OwedTo extends Fragment {
                                             myRef.child(uid).child("Debt").child(d.ph_no).setValue(d);
                                             myRef.push();
                                             Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
+                                            /*try {
+                                                smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
+                                            } catch (Exception e) {
+                                                Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                            }*/
                                         }
                                         Fragment fragment = new DebtManager();
                                         FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
@@ -197,6 +215,17 @@ public class OwedTo extends Fragment {
                                     public void onCancelled(DatabaseError databaseError) {
                                     }
                                 });
+                                /*try{
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setData(Uri.parse("smsto:"));
+                                    i.setType("vnd.android-dir/mms-sms");
+                                    i.putExtra("address", new String(txtMobile.getText().toString()));
+                                    i.putExtra("sms_body",txtMessage.getText().toString());
+                                    startActivity(Intent.createChooser(i, "Send sms via:"));
+                                }
+                                catch(Exception e){
+                                    Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+                                }*/
                             }
                         }
                     })
