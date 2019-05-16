@@ -44,7 +44,8 @@ public class History extends Fragment {
 
         c.setVisibility(v.GONE);
         //TextView tv = v.findViewById(R.id.typ1);
-        //tv.setBackgroundColor(Color.parseColor("#696969"));
+        //tv.setBackgroundColor(Color.parseColor("#696969"))
+
         createList(v,c);
         return v;
     }

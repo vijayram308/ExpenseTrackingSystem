@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = LayoutInflater.from(LoginActivity.this);
                 View promptView = layoutInflater.inflate(R.layout.forgot_pass, null);
                 final EditText et = promptView.findViewById(R.id.forgot_email);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
+                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this);
                 alertDialogBuilder.setView(promptView);
                 alertDialogBuilder.setTitle("Forgot Password");
                 alertDialogBuilder.setCancelable(false)
@@ -68,6 +68,13 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     });
                             }
+                        })
+                        .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
                         });
                 AlertDialog alert = alertDialogBuilder.create();
                 alert.show();
