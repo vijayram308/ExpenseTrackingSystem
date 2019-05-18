@@ -42,7 +42,7 @@ public class History extends Fragment {
         final View v=inflater.inflate(R.layout.frag_history, container, false);
         ConstraintLayout c = v.findViewById(R.id.his_main);
 
-        c.setVisibility(v.GONE);
+        c.setVisibility(View.GONE);
         //TextView tv = v.findViewById(R.id.typ1);
         //tv.setBackgroundColor(Color.parseColor("#696969"))
 
@@ -76,9 +76,9 @@ public class History extends Fragment {
         }
         return "";
     }
-    private void callList(View v, int d[]){
-        RecyclerView rv = (RecyclerView) v.findViewById(R.id.cards);
-        TextView tv = (TextView) v.findViewById(R.id.no_history);
+    private void callList(View v, int[] d){
+        RecyclerView rv = v.findViewById(R.id.cards);
+        TextView tv = v.findViewById(R.id.no_history);
         if(!(historyList.isEmpty())) {
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -94,14 +94,14 @@ public class History extends Fragment {
         }
     }
     private void createList(final View v, final ConstraintLayout c) {
-        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_h);
+        final ProgressBar pgsBar = v.findViewById(R.id.pBar_h);
         (myRef.child(uid).child("history")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String pay_md, typ, des,amn, str_m, d, dat, yr;
                 int m, y, i=0;
-                String s[]=new String[1000];
-                int d1[] = new int[1000];
+                String[] s = new String[1000];
+                int[] d1 = new int[1000];
                 for (DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()) {
                     pay_md = uniqueKeySnapshot.child("pay_mode").getValue().toString();
                     typ = uniqueKeySnapshot.child("type").getValue().toString();
@@ -122,8 +122,8 @@ public class History extends Fragment {
                     historyList.add(new Transaction(pay_md, typ, amn, des, d));
                 }
                 callList(v, d1);
-                c.setVisibility(v.VISIBLE);
-                pgsBar.setVisibility(v.GONE);
+                c.setVisibility(View.VISIBLE);
+                pgsBar.setVisibility(View.GONE);
             }
 
             @Override

@@ -33,9 +33,9 @@ public class BankAcc extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_bankacc, container, false);
 
-        final EditText nm= (EditText) v.findViewById(R.id.bank_name);
-        final EditText bl= (EditText) v.findViewById(R.id.bank_balance);
-        Button b=(Button) v.findViewById(R.id.bank_sub);
+        final EditText nm= v.findViewById(R.id.bank_name);
+        final EditText bl= v.findViewById(R.id.bank_balance);
+        Button b= v.findViewById(R.id.bank_sub);
 
         b.setOnClickListener(new View.OnClickListener() {
             @Override

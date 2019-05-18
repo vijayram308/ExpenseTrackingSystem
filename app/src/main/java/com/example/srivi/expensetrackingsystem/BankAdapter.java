@@ -23,8 +23,8 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.MyViewHolder> 
 
         public MyViewHolder(View view) {
             super(view);
-            bankText = (TextView) view.findViewById(R.id.bankName);
-            balanceText = (TextView) view.findViewById(R.id.balance);
+            bankText = view.findViewById(R.id.bankName);
+            balanceText = view.findViewById(R.id.balance);
         }
     }
 

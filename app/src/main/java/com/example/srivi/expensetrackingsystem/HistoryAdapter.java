@@ -15,7 +15,7 @@ import java.util.List;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
     private List<Transaction> historyList;
-    int d[]=new int[1000];
+    int[] d = new int[1000];
     Context con;
 
     /**
@@ -31,15 +31,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
         public MyViewHolder(View view) {
             super(view);
-            amountText = (TextView) view.findViewById(R.id.amn1);
-            typeText = (TextView) view.findViewById(R.id.typ1);
-            payModeText = (TextView) view.findViewById(R.id.pay_mode1);
-            descText = (TextView) view.findViewById(R.id.desc1);
-            dtText = (TextView) view.findViewById(R.id.dt1);
+            amountText = view.findViewById(R.id.amn1);
+            typeText = view.findViewById(R.id.typ1);
+            payModeText = view.findViewById(R.id.pay_mode1);
+            descText = view.findViewById(R.id.desc1);
+            dtText = view.findViewById(R.id.dt1);
         }
     }
 
-    public HistoryAdapter(List<Transaction> historyList, int d[], Context con) {
+    public HistoryAdapter(List<Transaction> historyList, int[] d, Context con) {
         this.con = con;
         this.historyList = historyList;
         this.d = d;

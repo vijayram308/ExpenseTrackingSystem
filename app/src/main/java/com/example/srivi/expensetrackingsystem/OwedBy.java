@@ -73,8 +73,8 @@ public class OwedBy extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v=inflater.inflate(R.layout.tab_owedby, container, false);
         final ConstraintLayout c = v.findViewById(R.id.owedby_main);
-        c.setVisibility(v.GONE);
-        Button b = (Button) v.findViewById(R.id.btn_owedby);
+        c.setVisibility(View.GONE);
+        Button b = v.findViewById(R.id.btn_owedby);
         createList(v,c);
         int ch=0;
         if(getActivity().getIntent().hasExtra("openDialog"))
@@ -172,7 +172,7 @@ public class OwedBy extends Fragment {
             alertDialogBuilder.setView(promptView);
             nm = promptView.findViewById(R.id.dialog_nm);
             ph = promptView.findViewById(R.id.dialog_ph);
-            amn = (EditText) promptView.findViewById(R.id.dialog_amn);
+            amn = promptView.findViewById(R.id.dialog_amn);
             if(getActivity().getIntent().hasExtra("nmVal")) {
                 nm.setText(getActivity().getIntent().getExtras().getString("nmVal"));
                 nm.setEnabled(false);
@@ -297,7 +297,7 @@ public class OwedBy extends Fragment {
         requestPermissions(new String[]{Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_CODE);
     }
 
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
@@ -408,8 +408,8 @@ public class OwedBy extends Fragment {
     }
 
     private void callList(View v){
-        RecyclerView rv = (RecyclerView) v.findViewById(R.id.owedby_list);
-        TextView tv = (TextView) v.findViewById(R.id.no_entry1);
+        RecyclerView rv = v.findViewById(R.id.owedby_list);
+        TextView tv = v.findViewById(R.id.no_entry1);
         if(!(debtList.isEmpty())) {
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -426,7 +426,7 @@ public class OwedBy extends Fragment {
     }
     private void createList(final View v, final ConstraintLayout c) {
         debtList.clear();
-        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_dby);
+        final ProgressBar pgsBar = v.findViewById(R.id.pBar_dby);
         (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -442,8 +442,8 @@ public class OwedBy extends Fragment {
                     }
                 }
                 callList(v);
-                c.setVisibility(v.VISIBLE);
-                pgsBar.setVisibility(v.GONE);
+                c.setVisibility(View.VISIBLE);
+                pgsBar.setVisibility(View.GONE);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

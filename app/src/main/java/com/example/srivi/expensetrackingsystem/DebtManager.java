@@ -59,14 +59,14 @@ public class DebtManager extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.frag_debt, container, false);
         if (checkPermission()) {
-            TabLayout tabLayout = (TabLayout) v.findViewById(R.id.tab_layout);
+            TabLayout tabLayout = v.findViewById(R.id.tab_layout);
             tabLayout.addTab(tabLayout.newTab().setText("OWED TO ME"));
             tabLayout.addTab(tabLayout.newTab().setText("OWED BY ME"));
             tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-            final ViewPager viewPager = (ViewPager) v.findViewById(R.id.pager);
+            final ViewPager viewPager = v.findViewById(R.id.pager);
             final PageAdapter adapter = new PageAdapter
-                    (((AppCompatActivity)getActivity()).getSupportFragmentManager(), tabLayout.getTabCount());
+                    (getActivity().getSupportFragmentManager(), tabLayout.getTabCount());
             viewPager.setAdapter(adapter);
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
             tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -107,7 +107,7 @@ public class DebtManager extends Fragment {
     private void requestPermission() {
         requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_CODE);
     }
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:

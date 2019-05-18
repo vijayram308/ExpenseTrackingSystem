@@ -56,10 +56,10 @@ public class DebtAdapter  extends RecyclerView.Adapter<DebtAdapter.MyViewHolder>
 
         public MyViewHolder(View view) {
             super(view);
-            nameText = (TextView) view.findViewById(R.id.name_debt);
-            amountText = (TextView) view.findViewById(R.id.amn_debt);
+            nameText = view.findViewById(R.id.name_debt);
+            amountText = view.findViewById(R.id.amn_debt);
             //phText = (TextView) view.findViewById(R.id.ph_debt);
-            this.doneBtn= (Button) view.findViewById(R.id.done_btn);
+            this.doneBtn= view.findViewById(R.id.done_btn);
         }
     }
 
@@ -90,8 +90,8 @@ public class DebtAdapter  extends RecyclerView.Adapter<DebtAdapter.MyViewHolder>
         View promptView = layoutInflater.inflate(R.layout.dialog_done, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c1);
         alertDialogBuilder.setView(promptView);
-        final EditText amn = (EditText) promptView.findViewById(R.id.dialog_done_amn);
-        final Button btn=(Button) promptView.findViewById(R.id.fullpay_btn);
+        final EditText amn = promptView.findViewById(R.id.dialog_done_amn);
+        final Button btn= promptView.findViewById(R.id.fullpay_btn);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

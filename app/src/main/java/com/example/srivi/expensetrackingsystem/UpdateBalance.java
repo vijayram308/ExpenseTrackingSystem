@@ -46,14 +46,14 @@ public class UpdateBalance extends Fragment {
 
         final View v=inflater.inflate(R.layout.frag_upd, container, false);
         final ConstraintLayout c = v.findViewById(R.id.upd_main);
-        c.setVisibility(v.GONE);
-        final Spinner pm= (Spinner) v.findViewById(R.id.pay_mode);
+        c.setVisibility(View.GONE);
+        final Spinner pm= v.findViewById(R.id.pay_mode);
         createList(pm,v,c);
 
-        final Spinner typ = (Spinner) v.findViewById(R.id.type);
-        final EditText as= (EditText) v.findViewById(R.id.amount);
-        final EditText dsc= (EditText) v.findViewById(R.id.desc);
-        Button b=(Button) v.findViewById(R.id.sub);
+        final Spinner typ = v.findViewById(R.id.type);
+        final EditText as= v.findViewById(R.id.amount);
+        final EditText dsc= v.findViewById(R.id.desc);
+        Button b= v.findViewById(R.id.sub);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this.getActivity(),
                 R.array.type, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -131,7 +131,7 @@ public class UpdateBalance extends Fragment {
         return v;
     }
     private void callList(View v){
-        RecyclerView rv = (RecyclerView) v.findViewById(R.id.list);
+        RecyclerView rv = v.findViewById(R.id.list);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rv.setLayoutManager(llm);
@@ -141,7 +141,7 @@ public class UpdateBalance extends Fragment {
     private void createList(final Spinner pm, final View v, final ConstraintLayout c) {
         bankList.clear();
         pay_spinnerList.clear();
-        final ProgressBar pgsBar = (ProgressBar) v.findViewById(R.id.pBar_upd);
+        final ProgressBar pgsBar = v.findViewById(R.id.pBar_upd);
         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -161,8 +161,8 @@ public class UpdateBalance extends Fragment {
                 ArrayAdapter<String> payAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_spinner_item, pay_spinnerList);
                 payAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 pm.setAdapter(payAdapter);
-                c.setVisibility(v.VISIBLE);
-                pgsBar.setVisibility(v.GONE);
+                c.setVisibility(View.VISIBLE);
+                pgsBar.setVisibility(View.GONE);
 
             }
 
