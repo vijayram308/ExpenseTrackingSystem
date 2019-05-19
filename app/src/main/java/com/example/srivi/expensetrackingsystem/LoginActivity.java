@@ -139,4 +139,32 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
     }
+
+    @Override
+    public void onBackPressed() {
+        showMessageOkCancel("Are you sure you want to Exit?",
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                    moveTaskToBack(true);
+                }
+            },
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+            }
+        });
+    }
+
+    private void showMessageOkCancel(String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
+        new android.support.v7.app.AlertDialog.Builder(LoginActivity.this)
+        .setCancelable(false)
+        .setMessage(message)
+        .setPositiveButton("Yes", okListener)
+        .setNegativeButton("Cancel",cancelListener)
+        .create()
+        .show();
+    }
 }
