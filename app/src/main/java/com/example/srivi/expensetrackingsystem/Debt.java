@@ -1,9 +1,5 @@
 package com.example.srivi.expensetrackingsystem;
 
-/**
- * Created by srivi on 08-05-2019.
- */
-
 public class Debt {
     protected String name;
     protected String ph_no;

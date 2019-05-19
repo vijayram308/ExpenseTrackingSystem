@@ -28,7 +28,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -136,8 +135,6 @@ public class OwedTo extends Fragment {
     }
 
     private void retrieveContactName() {
-
-        // querying contact data store
         Cursor cursor = getActivity().getContentResolver().query(uriContact, null, null, null, null);
         if (cursor.moveToFirst()) {
 
