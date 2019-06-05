@@ -1,5 +1,6 @@
 package com.example.srivi.expensetrackingsystem;
 
+import android.app.KeyguardManager;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +42,6 @@ public class SignupActivity extends AppCompatActivity {
         final EditText w_balance = findViewById(R.id.signup_wl);
         Button btnSignUp = findViewById(R.id.signup_btn);
         TextView signIn=findViewById(R.id.reg_login);
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

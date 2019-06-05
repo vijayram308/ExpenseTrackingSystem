@@ -1,5 +1,6 @@
 package com.example.srivi.expensetrackingsystem;
 
+import android.app.KeyguardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,25 +21,55 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int INTENT_AUTHENTICATE=978;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.getWindow().setStatusBarColor(this.getResources().getColor(R.color.StatsColor));
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        int ch1=0;
+        if(getIntent().hasExtra("test"))
+            ch1 = getIntent().getExtras().getInt("test");
+        if(ch1!=1) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                KeyguardManager km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        int ch=0;
-        if(getIntent().hasExtra("frgToLoad"))
-            ch = getIntent().getExtras().getInt("frgToLoad");
-        displaySelectedScreen(R.id.nav_upd, ch);
+                if (km.isKeyguardSecure()) {
+                    Intent authIntent = km.createConfirmDeviceCredentialIntent("Unlock MFlow", "Confirm your screen lock pattern, PIN or password");
+                    startActivityForResult(authIntent, INTENT_AUTHENTICATE);
+                }
+            }
+        }
+        else{
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            navigationView.setNavigationItemSelectedListener(this);
+            int ch=0;
+            if(getIntent().hasExtra("frgToLoad"))
+                ch = getIntent().getExtras().getInt("frgToLoad");
+            displaySelectedScreen(R.id.nav_upd, ch);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INTENT_AUTHENTICATE) {
+            if (resultCode == RESULT_OK) {
+                Intent i = new Intent(this, MainActivity.class);
+                i.putExtra("test", 1);
+                startActivity(i);
+            }
+            else {
+                finish();
+                moveTaskToBack(true);
+            }
+        }
     }
 
     @Override
