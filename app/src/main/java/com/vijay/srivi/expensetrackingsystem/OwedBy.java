@@ -1,4 +1,4 @@
-package com.example.srivi.expensetrackingsystem;
+package com.vijay.srivi.expensetrackingsystem;
 
 import android.Manifest;
 import android.app.AlertDialog;

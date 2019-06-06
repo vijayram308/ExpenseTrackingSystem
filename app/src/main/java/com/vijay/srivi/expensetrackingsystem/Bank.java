@@ -1,4 +1,4 @@
-package com.example.srivi.expensetrackingsystem;
+package com.vijay.srivi.expensetrackingsystem;
 
 /**
  * Created by srivi on 23-04-2019.

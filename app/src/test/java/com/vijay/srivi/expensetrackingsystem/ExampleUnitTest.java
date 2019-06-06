@@ -1,4 +1,4 @@
-package com.example.srivi.expensetrackingsystem;
+package com.vijay.srivi.expensetrackingsystem;
 
 import org.junit.Test;
 

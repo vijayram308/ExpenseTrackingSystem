@@ -1,4 +1,4 @@
-package com.example.srivi.expensetrackingsystem;
+package com.vijay.srivi.expensetrackingsystem;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;

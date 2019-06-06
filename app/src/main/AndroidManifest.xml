@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.srivi.expensetrackingsystem">
+    package="com.vijay.srivi.expensetrackingsystem">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -18,18 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.vijay.srivi.expensetrackingsystem.MainActivity"
             android:label="@string/app_name"
             android:autoRemoveFromRecents="true"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name="com.vijay.srivi.expensetrackingsystem.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignupActivity"></activity>
+        <activity android:name="com.vijay.srivi.expensetrackingsystem.SignupActivity"></activity>
     </application>
 
 </manifest>

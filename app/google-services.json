@@ -42,6 +42,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281745014802:android:b998ab87e42672cb",
+        "android_client_info": {
+          "package_name": "com.vijay.srivi.expensetrackingsystem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281745014802-hto88n3q16cgfc312uq2gkkhachj6u1b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgfkVqXvz4qmmD5mmqKhHSPmfkCfzseio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281745014802-hto88n3q16cgfc312uq2gkkhachj6u1b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
