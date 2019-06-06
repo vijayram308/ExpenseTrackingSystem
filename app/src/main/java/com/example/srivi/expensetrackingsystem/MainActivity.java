@@ -64,11 +64,14 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Intent i = new Intent(this, MainActivity.class);
                 i.putExtra("test", 1);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(i);
             }
             else {
-                finish();
-                moveTaskToBack(true);
+
+                    finish();
+                    moveTaskToBack(true);
+
             }
         }
     }
@@ -83,8 +86,14 @@ public class MainActivity extends AppCompatActivity
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            finish();
-                            moveTaskToBack(true);
+                            if(android.os.Build.VERSION.SDK_INT >= 21)
+                            {
+                                finishAndRemoveTask();
+                            }
+                            else
+                            {
+                                finish();
+                            }
                         }
                     },
                     new DialogInterface.OnClickListener() {
