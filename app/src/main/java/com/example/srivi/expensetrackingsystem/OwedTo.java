@@ -78,14 +78,12 @@ public class OwedTo extends Fragment {
         int ch=0;
         if(getActivity().getIntent().hasExtra("openDialog"))
             ch = getActivity().getIntent().getExtras().getInt("openDialog");
-        Log.d("TEST2",""+ch);
         if(ch==1){
             showInputDialog();
         }
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("TTTTT","");
                 startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
             }
         });
@@ -95,10 +93,8 @@ public class OwedTo extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("TTTTT"+resultCode,""+requestCode);
 
         if (requestCode == REQUEST_CODE_PICK_CONTACTS && resultCode == RESULT_OK) {
-            Log.d("TTTTT","ABC");
             uriContact = data.getData();
             retrieveContactNumber();
             retrieveContactName();
@@ -151,7 +147,6 @@ public class OwedTo extends Fragment {
         cursor.close();
     }
     protected void showInputDialog() {
-        Log.d("TEST",""+contactNum);
 
         if((contactNum == null)&&(!(getActivity().getIntent().hasExtra("nmVal")))){
             showMessage("A contact without phone number cannot be added !!",new DialogInterface.OnClickListener() {
