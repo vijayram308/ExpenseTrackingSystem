@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int INTENT_AUTHENTICATE=978;
+    private static final int INTENT_AUTHENTICATE=10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == INTENT_AUTHENTICATE) {
             if (resultCode == RESULT_OK) {
                 Intent i = new Intent(this, MainActivity.class);

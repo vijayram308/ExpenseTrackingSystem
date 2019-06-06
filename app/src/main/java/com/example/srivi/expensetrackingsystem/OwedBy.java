@@ -63,7 +63,7 @@ public class OwedBy extends Fragment {
     String contactName = null;
     String contactNum = null;
 
-    private static final int PERMISSION_REQUEST_CODE = 0;
+    private static final int PERMISSION_REQUEST_CODE = 2;
     CheckBox cb;
     EditText nm;
     EditText ph;

@@ -63,7 +63,7 @@ public class OwedTo extends Fragment {
     String contactName = null;
     String contactNum = null;
 
-    private static final int PERMISSION_REQUEST_CODE = 0;
+    private static final int PERMISSION_REQUEST_CODE = 2;
     CheckBox cb;
     EditText nm;
     EditText ph;
@@ -73,27 +73,32 @@ public class OwedTo extends Fragment {
         final View v = inflater.inflate(R.layout.tab_owedto, container, false);
         final ConstraintLayout c = v.findViewById(R.id.owedto_main);
         c.setVisibility(View.GONE);
-            Button b = v.findViewById(R.id.btn_owedto);
-            createList(v, c);
-            int ch=0;
-            if(getActivity().getIntent().hasExtra("openDialog"))
-                ch = getActivity().getIntent().getExtras().getInt("openDialog");
-            if(ch==1){
-                showInputDialog();
+        Button b = v.findViewById(R.id.btn_owedto);
+        createList(v, c);
+        int ch=0;
+        if(getActivity().getIntent().hasExtra("openDialog"))
+            ch = getActivity().getIntent().getExtras().getInt("openDialog");
+        Log.d("TEST2",""+ch);
+        if(ch==1){
+            showInputDialog();
+        }
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("TTTTT","");
+                startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
             }
-            b.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), REQUEST_CODE_PICK_CONTACTS);
-                }
-            });
+        });
         return v;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("TTTTT"+resultCode,""+requestCode);
+
         if (requestCode == REQUEST_CODE_PICK_CONTACTS && resultCode == RESULT_OK) {
+            Log.d("TTTTT","ABC");
             uriContact = data.getData();
             retrieveContactNumber();
             retrieveContactName();
@@ -101,7 +106,6 @@ public class OwedTo extends Fragment {
     }
 
     private void retrieveContactNumber() {
-
         // getting contacts ID
         Cursor cursorID = getActivity().getContentResolver().query(uriContact,
                 new String[]{ContactsContract.Contacts._ID},
@@ -147,6 +151,7 @@ public class OwedTo extends Fragment {
         cursor.close();
     }
     protected void showInputDialog() {
+        Log.d("TEST",""+contactNum);
 
         if((contactNum == null)&&(!(getActivity().getIntent().hasExtra("nmVal")))){
             showMessage("A contact without phone number cannot be added !!",new DialogInterface.OnClickListener() {
@@ -334,6 +339,7 @@ public class OwedTo extends Fragment {
                                                                 return;
                                                             }
                                                             if (checkPermission()) {
+                                                                Log.d("AAAA","TEST3");
                                                                 Intent i = new Intent(getActivity(), MainActivity.class);
                                                                 i.putExtra("frgToLoad", 1);
                                                                 i.putExtra("openDialog", 1);
