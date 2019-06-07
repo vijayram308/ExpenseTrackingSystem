@@ -1,25 +1,18 @@
 package com.vijay.srivi.expensetrackingsystem;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,26 +41,23 @@ import java.util.List;
 
 public class OwedTo extends Fragment {
 
-    private List<Debt> debtList = new ArrayList<>();
-
-    final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    final DatabaseReference myRef = database.getReference();
-
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    final String uid = user.getUid();
-
     private static final int REQUEST_CODE_PICK_CONTACTS = 1;
     private static final int RESULT_OK = -1;
-    private Uri uriContact=null;
-    private String contactID;
+    private static final int PERMISSION_REQUEST_CODE = 2;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRef = database.getReference();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    final String uid = user.getUid();
     String contactName = null;
     String contactNum = null;
-
-    private static final int PERMISSION_REQUEST_CODE = 2;
     CheckBox cb;
     EditText nm;
     EditText ph;
     EditText amn;
+    private List<Debt> debtList = new ArrayList<>();
+    private Uri uriContact = null;
+    private String contactID;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.tab_owedto, container, false);
@@ -75,10 +65,10 @@ public class OwedTo extends Fragment {
         c.setVisibility(View.GONE);
         Button b = v.findViewById(R.id.btn_owedto);
         createList(v, c);
-        int ch=0;
-        if(getActivity().getIntent().hasExtra("openDialog"))
+        int ch = 0;
+        if (getActivity().getIntent().hasExtra("openDialog"))
             ch = getActivity().getIntent().getExtras().getInt("openDialog");
-        if(ch==1){
+        if (ch == 1) {
             showInputDialog();
         }
         b.setOnClickListener(new View.OnClickListener() {
@@ -146,17 +136,17 @@ public class OwedTo extends Fragment {
         }
         cursor.close();
     }
+
     protected void showInputDialog() {
 
-        if((contactNum == null)&&(!(getActivity().getIntent().hasExtra("nmVal")))){
-            showMessage("A contact without phone number cannot be added !!",new DialogInterface.OnClickListener() {
+        if ((contactNum == null) && (!(getActivity().getIntent().hasExtra("nmVal")))) {
+            showMessage("A contact without phone number cannot be added !!", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }
-            },"OK");
-        }
-        else {
+            }, "OK");
+        } else {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             View promptView = layoutInflater.inflate(R.layout.dialog, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
@@ -166,7 +156,7 @@ public class OwedTo extends Fragment {
             nm = promptView.findViewById(R.id.dialog_nm);
             ph = promptView.findViewById(R.id.dialog_ph);
             amn = promptView.findViewById(R.id.dialog_amn);
-            if(getActivity().getIntent().hasExtra("nmVal")) {
+            /*if(getActivity().getIntent().hasExtra("nmVal")) {
                 nm.setText(getActivity().getIntent().getExtras().getString("nmVal"));
                 nm.setEnabled(false);
                 ph.setText(getActivity().getIntent().getExtras().getString("phVal"));
@@ -178,19 +168,19 @@ public class OwedTo extends Fragment {
                 getActivity().getIntent().removeExtra("amnVal");
                 getActivity().getIntent().removeExtra("openDialog");
             }
-            else {
-                nm.setText(contactName);
-                ph.setText(contactNum);
-                nm.setEnabled(false);
-                ph.setEnabled(false);
-            }
-            cb.setOnClickListener(new View.OnClickListener() {
+            else {*/
+            nm.setText(contactName);
+            ph.setText(contactNum);
+            nm.setEnabled(false);
+            ph.setEnabled(false);
+            //}
+            /*cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(!checkPermission())
                         requestPermission();
                 }
-            });
+            });*/
             // setup a dialog window
             alertDialogBuilder.setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -199,7 +189,7 @@ public class OwedTo extends Fragment {
                             if (amn_txt.isEmpty())
                                 Toast.makeText(getContext(), "Amount field cannot be left empty", Toast.LENGTH_SHORT).show();
                             else {
-                                final SmsManager smgr = SmsManager.getDefault();
+                                //final SmsManager smgr = SmsManager.getDefault();
                                 final Debt d = new Debt(nm.getText().toString(), amn.getText().toString(), ph.getText().toString());
                                 (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -210,43 +200,42 @@ public class OwedTo extends Fragment {
                                             myRef.child(uid).child("Debt").child(d.ph_no).child("amount").setValue(x);
                                             if (x < 0) {
                                                 x *= -1;
-                                                if(cb.isChecked()) {
+                                                if (cb.isChecked()) {
                                                     try {
-                                                        smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
+                                                        //smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
+                                                        sendSMS("I owe you Rs. " + x, ph.getText().toString());
                                                         Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
                                                     }
-                                                }
-                                                else
+                                                } else
                                                     Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x, Toast.LENGTH_SHORT).show();
                                             } else if (x > 0) {
-                                                if(cb.isChecked()){
+                                                if (cb.isChecked()) {
                                                     try {
-                                                        smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
+                                                        //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
+                                                        sendSMS("You owe me Rs. " + x, ph.getText().toString());
                                                         Toast.makeText(getContext(), d.name + " owes you Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
                                                     }
-                                                }
-                                                else
+                                                } else
                                                     Toast.makeText(getContext(), d.name + " owes you Rs. " + x, Toast.LENGTH_SHORT).show();
-                                            }
-                                            else {
+                                            } else {
                                                 myRef.child(uid).child("Debt").child(d.ph_no).getRef().removeValue();
                                             }
                                         } else {
                                             myRef.child(uid).child("Debt").child(d.ph_no).setValue(d);
                                             myRef.push();
-                                            if(cb.isChecked()) {
+                                            if (cb.isChecked()) {
                                                 try {
-                                                    smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
-                                                    Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount +". SMS sent", Toast.LENGTH_SHORT).show();
+                                                    //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
+                                                    sendSMS("You owe me Rs. " + d.amount, ph.getText().toString());
+                                                    Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                 } catch (Exception e) {
                                                     Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
                                                 }
-                                            }
-                                            else
+                                            } else
                                                 Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount, Toast.LENGTH_SHORT).show();
                                         }
                                         Fragment fragment = new DebtManager();
@@ -275,7 +264,14 @@ public class OwedTo extends Fragment {
         }
     }
 
-    private boolean checkPermission() {
+    public void sendSMS(String msg, String num) {
+        Uri uri = Uri.parse("smsto:" + num);
+        Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+        it.putExtra("sms_body", msg);
+        startActivity(it);
+    }
+
+    /*private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS);
         return result == PackageManager.PERMISSION_GRANTED;
     }
@@ -334,7 +330,6 @@ public class OwedTo extends Fragment {
                                                                 return;
                                                             }
                                                             if (checkPermission()) {
-                                                                Log.d("AAAA","TEST3");
                                                                 Intent i = new Intent(getActivity(), MainActivity.class);
                                                                 i.putExtra("frgToLoad", 1);
                                                                 i.putExtra("openDialog", 1);
@@ -371,7 +366,7 @@ public class OwedTo extends Fragment {
                 }
                 break;
         }
-    }
+    }*/
 
     private void showMessageOkCancel(String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String btn) {
         new android.support.v7.app.AlertDialog.Builder(getActivity())
@@ -379,7 +374,7 @@ public class OwedTo extends Fragment {
                 .setTitle("PERMISSION REQUIRED")
                 .setMessage(message)
                 .setPositiveButton(btn, okListener)
-                .setNegativeButton("Cancel",cancelListener)
+                .setNegativeButton("Cancel", cancelListener)
                 .create()
                 .show();
     }
@@ -394,10 +389,10 @@ public class OwedTo extends Fragment {
                 .show();
     }
 
-    public void callList(View v){
+    public void callList(View v) {
         RecyclerView rv = v.findViewById(R.id.owedto_list);
         TextView tv = v.findViewById(R.id.no_entry);
-        if(!(debtList.isEmpty())) {
+        if (!(debtList.isEmpty())) {
             LinearLayoutManager llm = new LinearLayoutManager(getContext());
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             rv.setLayoutManager(llm);
@@ -405,8 +400,7 @@ public class OwedTo extends Fragment {
             rv.setAdapter(ca);
             rv.setVisibility(View.VISIBLE);
             tv.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             rv.setVisibility(View.GONE);
             tv.setVisibility(View.VISIBLE);
         }
@@ -420,7 +414,7 @@ public class OwedTo extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name, amount, ph;
                 for (DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()) {
-                    if(Integer.parseInt(uniqueKeySnapshot.child("amount").getValue().toString())>0) {
+                    if (Integer.parseInt(uniqueKeySnapshot.child("amount").getValue().toString()) > 0) {
                         name = uniqueKeySnapshot.child("name").getValue().toString();
                         amount = uniqueKeySnapshot.child("amount").getValue().toString();
                         amount = "Rs." + amount;
@@ -432,6 +426,7 @@ public class OwedTo extends Fragment {
                 c.setVisibility(View.VISIBLE);
                 pgsBar.setVisibility(View.GONE);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }

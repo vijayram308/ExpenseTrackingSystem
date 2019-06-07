@@ -12,6 +12,7 @@ public class Bank {
         this.bank_name = bank_name;
         this.balance = balance;
     }
+
     public String toString() {
         return "Bank Name : " + bank_name + "\nBalance : " + balance;
     }

@@ -1,9 +1,9 @@
 package com.vijay.srivi.expensetrackingsystem;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -21,9 +21,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
-    FirebaseAuth firebaseAuth;
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = database.getReference();
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +40,13 @@ public class SignupActivity extends AppCompatActivity {
         final EditText passwd = findViewById(R.id.signup_pass);
         final EditText w_balance = findViewById(R.id.signup_wl);
         Button btnSignUp = findViewById(R.id.signup_btn);
-        TextView signIn=findViewById(R.id.reg_login);
+        TextView signIn = findViewById(R.id.reg_login);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String emailID = emailId.getText().toString();
                 String paswd = passwd.getText().toString();
-                final String wBalance=w_balance.getText().toString();
+                final String wBalance = w_balance.getText().toString();
                 if (emailID.isEmpty()) {
                     emailId.setError("Please provide your Email ID!");
                     emailId.requestFocus();

@@ -29,7 +29,6 @@ import android.widget.Toast;
 public class DebtManager extends Fragment {
 
 
-
     private static final int PERMISSION_REQUEST_CODE = 0;
 
     @Nullable
@@ -70,11 +69,10 @@ public class DebtManager extends Fragment {
                 tab.select();
             }
 
-        }
-        else {
+        } else {
             requestPermission();
         }
-    return v;
+        return v;
     }
 
     private boolean checkPermission() {
@@ -85,6 +83,7 @@ public class DebtManager extends Fragment {
     private void requestPermission() {
         requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_CODE);
     }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
         switch (requestCode) {
@@ -94,12 +93,11 @@ public class DebtManager extends Fragment {
                     Fragment fragment = new DebtManager();
                     FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
 
-                    if (accepted){
+                    if (accepted) {
                         ft.replace(R.id.content_frame, fragment);
                         ft.commit();
-                    }
-                    else {
-                        Toast.makeText(getContext(),"Permission Denied",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getContext(), "Permission Denied", Toast.LENGTH_LONG).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
                                 showMessage("Debt Manager feature requires permission to access your contacts.\n\nPlease allow the permission to use this feature.",
@@ -111,11 +109,9 @@ public class DebtManager extends Fragment {
                                                             PERMISSION_REQUEST_CODE);
                                                 }
                                             }
-                                        },"OK");
+                                        }, "OK");
                                 return;
-                            }
-                            else
-                            {
+                            } else {
                                 showMessage("The Debt Manager feature requires permission to access your contacts. Please allow the permission to use this feature.\n\nYou can click on the Settings button below or manually navigate to the App Settings and allow this permission. ",
                                         new DialogInterface.OnClickListener() {
                                             @Override
@@ -144,10 +140,10 @@ public class DebtManager extends Fragment {
                                                     Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
                                                     intent.setData(uri);
                                                     handler.postDelayed(checkSettingOn, 1000);
-                                                    startActivityForResult(intent,PERMISSION_REQUEST_CODE);
+                                                    startActivityForResult(intent, PERMISSION_REQUEST_CODE);
                                                 }
                                             }
-                                        },"Settings");
+                                        }, "Settings");
                                 return;
                             }
                         }

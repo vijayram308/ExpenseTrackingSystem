@@ -3,9 +3,9 @@ package com.vijay.srivi.expensetrackingsystem;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText loginEmailId = findViewById(R.id.email);
         final EditText logInpasswd = findViewById(R.id.pass);
         Button btnLogIn = findViewById(R.id.login_btn);
-        TextView signup= findViewById(R.id.sign_up);
+        TextView signup = findViewById(R.id.sign_up);
         TextView forgotPass = findViewById(R.id.forgot_pass);
 
         forgotPass.setOnClickListener(new View.OnClickListener() {
@@ -52,28 +52,27 @@ public class LoginActivity extends AppCompatActivity {
                 alertDialogBuilder.setTitle("Forgot Password");
                 alertDialogBuilder.setCancelable(false)
                         .setPositiveButton("Reset Password",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                FirebaseAuth.getInstance().sendPasswordResetEmail(et.getText().toString())
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(LoginActivity.this,"Check your email to reset the password",Toast.LENGTH_LONG).show();
-                                            }
-                                            else
-                                                Toast.makeText(LoginActivity.this,"The entered Email ID is not registered",Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                            }
-                        })
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        FirebaseAuth.getInstance().sendPasswordResetEmail(et.getText().toString())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(LoginActivity.this, "Check your email to reset the password", Toast.LENGTH_LONG).show();
+                                                        } else
+                                                            Toast.makeText(LoginActivity.this, "The entered Email ID is not registered", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                    }
+                                })
                         .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.cancel();
-                                }
-                        });
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.cancel();
+                                    }
+                                });
                 AlertDialog alert = alertDialogBuilder.create();
                 alert.show();
             }
@@ -141,28 +140,28 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         showMessageOkCancel("Are you sure you want to Exit?",
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    finish();
-                    moveTaskToBack(true);
-                }
-            },
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-            }
-        });
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                        moveTaskToBack(true);
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
     }
 
     private void showMessageOkCancel(String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         new android.support.v7.app.AlertDialog.Builder(LoginActivity.this)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton("Yes", okListener)
-        .setNegativeButton("Cancel",cancelListener)
-        .create()
-        .show();
+                .setCancelable(false)
+                .setMessage(message)
+                .setPositiveButton("Yes", okListener)
+                .setNegativeButton("Cancel", cancelListener)
+                .create()
+                .show();
     }
 }

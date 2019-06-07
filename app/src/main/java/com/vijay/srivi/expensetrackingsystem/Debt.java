@@ -10,6 +10,7 @@ public class Debt {
         this.amount = amount;
         this.ph_no = ph_no;
     }
+
     public String toString() {
         return "Name : " + name + "\nAmount : " + amount + "\nPhone Number : " + ph_no;
     }

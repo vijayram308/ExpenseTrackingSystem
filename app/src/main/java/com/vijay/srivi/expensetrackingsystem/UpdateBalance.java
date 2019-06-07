@@ -31,29 +31,27 @@ import java.util.List;
 
 public class UpdateBalance extends Fragment {
 
-    private List<Bank> bankList = new ArrayList<>();
-    private List<String> pay_spinnerList= new ArrayList<>();
-
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = database.getReference();
-
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     final String uid = user.getUid();
+    private List<Bank> bankList = new ArrayList<>();
+    private List<String> pay_spinnerList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        final View v=inflater.inflate(R.layout.frag_upd, container, false);
+        final View v = inflater.inflate(R.layout.frag_upd, container, false);
         final ConstraintLayout c = v.findViewById(R.id.upd_main);
         c.setVisibility(View.GONE);
-        final Spinner pm= v.findViewById(R.id.pay_mode);
-        createList(pm,v,c);
+        final Spinner pm = v.findViewById(R.id.pay_mode);
+        createList(pm, v, c);
 
         final Spinner typ = v.findViewById(R.id.type);
-        final EditText as= v.findViewById(R.id.amount);
-        final EditText dsc= v.findViewById(R.id.desc);
-        Button b= v.findViewById(R.id.sub);
+        final EditText as = v.findViewById(R.id.amount);
+        final EditText dsc = v.findViewById(R.id.desc);
+        Button b = v.findViewById(R.id.sub);
         ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this.getActivity(),
                 R.array.type, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -71,9 +69,7 @@ public class UpdateBalance extends Fragment {
                     as.setError("Please enter the amount");
                     as.requestFocus();
                     return;
-                }
-                else
-                {
+                } else {
                     t = new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), Integer.parseInt(as.getText().toString()), des, new Date());
                     //t.format_date(d1);
                     if ((t.type).equals("Expenditure")) {
@@ -82,20 +78,19 @@ public class UpdateBalance extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
                                 x -= t.amount;
-                                if(x<0) {
-                                    String msg="Insufficient "+t.pay_mode+" balance";
+                                if (x < 0) {
+                                    String msg = "Insufficient " + t.pay_mode + " balance";
                                     Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
-                                }
-                                else {
+                                } else {
                                     myRef.child(uid).child("history").push().setValue(t);
                                     myRef.push();
                                     myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(x);
                                     Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
-                                    createList(pm,v,c);
+                                    createList(pm, v, c);
                                 }
                             }
 
@@ -116,7 +111,7 @@ public class UpdateBalance extends Fragment {
                                 Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
                                 as.getText().clear();
                                 dsc.getText().clear();
-                                createList(pm,v,c);
+                                createList(pm, v, c);
                             }
 
                             @Override
@@ -130,7 +125,8 @@ public class UpdateBalance extends Fragment {
         });
         return v;
     }
-    private void callList(View v){
+
+    private void callList(View v) {
         RecyclerView rv = v.findViewById(R.id.list);
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -138,6 +134,7 @@ public class UpdateBalance extends Fragment {
         BankAdapter ca = new BankAdapter(bankList);
         rv.setAdapter(ca);
     }
+
     private void createList(final Spinner pm, final View v, final ConstraintLayout c) {
         bankList.clear();
         pay_spinnerList.clear();
@@ -145,13 +142,13 @@ public class UpdateBalance extends Fragment {
         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String nm=dataSnapshot.child("Wallet").child("Name").getValue().toString();
-                String bl =  "Rs." + dataSnapshot.child("Wallet").child("Balance").getValue().toString();
+                String nm = dataSnapshot.child("Wallet").child("Name").getValue().toString();
+                String bl = "Rs." + dataSnapshot.child("Wallet").child("Balance").getValue().toString();
                 bankList.add(new Bank(nm, bl));
                 pay_spinnerList.add(nm);
                 callList(v);
                 for (DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()) {
-                    if((uniqueKeySnapshot.child("Name").getValue().toString()).equals("Wallet"))
+                    if ((uniqueKeySnapshot.child("Name").getValue().toString()).equals("Wallet"))
                         continue;
                     nm = uniqueKeySnapshot.child("Name").getValue().toString();
                     bl = "Rs." + uniqueKeySnapshot.child("Balance").getValue().toString();
@@ -180,9 +177,10 @@ public class UpdateBalance extends Fragment {
         getActivity().setTitle("Update Balance");
     }
 }
+
 class Transaction {
-    String pay_mode;
     public String type;
+    String pay_mode;
     int amount;
     String amn;
     String desc = "";
