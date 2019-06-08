@@ -1,6 +1,7 @@
 package com.vijay.srivi.expensetrackingsystem;
 
 import android.os.Bundle;
+import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
@@ -180,12 +181,12 @@ public class UpdateBalance extends Fragment {
 
 class Transaction {
     public String type;
-    String pay_mode;
-    int amount;
-    String amn;
-    String desc = "";
-    Date dt;
-    String d;
+    public String pay_mode;
+    public int amount;
+    public String amn;
+    public String desc = "";
+    public Date dt;
+    public String d;
 
 
     public Transaction(String Pay_mode, String Type, String Amn, String Desc, String D) {

@@ -1,9 +1,9 @@
 package com.vijay.srivi.expensetrackingsystem;
 
 public class Debt {
-    protected String name;
-    protected String ph_no;
-    protected String amount;
+    public String name;
+    public String ph_no;
+    public String amount;
 
     public Debt(String name, String amount, String ph_no) {
         this.name = name;

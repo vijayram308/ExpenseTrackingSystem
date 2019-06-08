@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "281745014802-d59srh4h1voq7jtu0eapp8ali3n3j8md.apps.googleusercontent.com",
+          "client_id": "281745014802-hd0j5241h0t3q7sj1el8blp74jpfo78j.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.srivi.expensetrackingsystem",
-            "certificate_hash": "8614ca900399189871dd694a4f3af12a2db24c2c"
+            "certificate_hash": "41a2faad664b548405163fa4085c1583f00293b1"
           }
         },
         {

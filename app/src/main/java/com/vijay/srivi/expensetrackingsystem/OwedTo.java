@@ -203,7 +203,7 @@ public class OwedTo extends Fragment {
                                                 if (cb.isChecked()) {
                                                     try {
                                                         //smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
-                                                        sendSMS("I owe you Rs. " + x, ph.getText().toString());
+                                                        sendSMS("Hi "+nm.getText()+"\n\nI owe you Rs. " + x + "\n\nSent via MFlow", ph.getText().toString());
                                                         Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
@@ -214,7 +214,7 @@ public class OwedTo extends Fragment {
                                                 if (cb.isChecked()) {
                                                     try {
                                                         //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
-                                                        sendSMS("You owe me Rs. " + x, ph.getText().toString());
+                                                        sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + x +"\n\nSent via MFlow", ph.getText().toString());
                                                         Toast.makeText(getContext(), d.name + " owes you Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
@@ -230,7 +230,7 @@ public class OwedTo extends Fragment {
                                             if (cb.isChecked()) {
                                                 try {
                                                     //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
-                                                    sendSMS("You owe me Rs. " + d.amount, ph.getText().toString());
+                                                    sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + d.amount + "\n\nSent via MFlow", ph.getText().toString());
                                                     Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                 } catch (Exception e) {
                                                     Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
