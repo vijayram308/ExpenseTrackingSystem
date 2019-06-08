@@ -156,19 +156,6 @@ public class OwedTo extends Fragment {
             nm = promptView.findViewById(R.id.dialog_nm);
             ph = promptView.findViewById(R.id.dialog_ph);
             amn = promptView.findViewById(R.id.dialog_amn);
-            /*if(getActivity().getIntent().hasExtra("nmVal")) {
-                nm.setText(getActivity().getIntent().getExtras().getString("nmVal"));
-                nm.setEnabled(false);
-                ph.setText(getActivity().getIntent().getExtras().getString("phVal"));
-                ph.setEnabled(false);
-                amn.setText(getActivity().getIntent().getExtras().getString("amnVal"));
-                cb.setChecked(true);
-                getActivity().getIntent().removeExtra("nmVal");
-                getActivity().getIntent().removeExtra("phVal");
-                getActivity().getIntent().removeExtra("amnVal");
-                getActivity().getIntent().removeExtra("openDialog");
-            }
-            else {*/
             nm.setText(contactName);
             ph.setText(contactNum);
             nm.setEnabled(false);
@@ -203,7 +190,7 @@ public class OwedTo extends Fragment {
                                                 if (cb.isChecked()) {
                                                     try {
                                                         //smgr.sendTextMessage(ph.getText().toString(), null, "I owe you Rs. " + x, null, null);
-                                                        sendSMS("Hi "+nm.getText()+"\n\nI owe you Rs. " + x + "\n\nSent via MFlow", ph.getText().toString());
+                                                        sendSMS("Hi "+nm.getText()+"\n\nI owe you Rs. " + x + "\n\n-Sent via MFlow", ph.getText().toString());
                                                         Toast.makeText(getContext(), "You owe " + d.name + " Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
@@ -214,7 +201,7 @@ public class OwedTo extends Fragment {
                                                 if (cb.isChecked()) {
                                                     try {
                                                         //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + x, null, null);
-                                                        sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + x +"\n\nSent via MFlow", ph.getText().toString());
+                                                        sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + x +"\n\n-Sent via MFlow", ph.getText().toString());
                                                         Toast.makeText(getContext(), d.name + " owes you Rs. " + x + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                     } catch (Exception e) {
                                                         Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
@@ -230,7 +217,7 @@ public class OwedTo extends Fragment {
                                             if (cb.isChecked()) {
                                                 try {
                                                     //smgr.sendTextMessage(ph.getText().toString(), null, "You owe me Rs. " + d.amount, null, null);
-                                                    sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + d.amount + "\n\nSent via MFlow", ph.getText().toString());
+                                                    sendSMS("Hi "+nm.getText()+"\n\nYou owe me Rs. " + d.amount + "\n\n-Sent via MFlow", ph.getText().toString());
                                                     Toast.makeText(getContext(), d.name + " owes you Rs. " + d.amount + ". SMS sent", Toast.LENGTH_SHORT).show();
                                                 } catch (Exception e) {
                                                     Toast.makeText(getContext(), "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();

@@ -44,12 +44,12 @@ public class BankAcc extends Fragment {
                     Toast.makeText(getContext(), "Bank Name cannot be empty", Toast.LENGTH_SHORT).show();
                 else if (bl.getText().toString().matches("")) {
                     myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Name").setValue(bnk.bank_name);
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue("0");
+                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue(0);
                     Toast.makeText(getContext(), "Bank Account added with Balance set to 0", Toast.LENGTH_SHORT).show();
                     nm.getText().clear();
                 } else {
                     myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Name").setValue(bnk.bank_name);
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue(bnk.balance);
+                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue(Float.parseFloat(bnk.balance));
                     Toast.makeText(getContext(), "Bank Account Added", Toast.LENGTH_SHORT).show();
                     nm.getText().clear();
                     bl.getText().clear();

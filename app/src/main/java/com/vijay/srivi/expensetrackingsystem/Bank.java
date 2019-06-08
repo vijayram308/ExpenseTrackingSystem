@@ -5,8 +5,8 @@ package com.vijay.srivi.expensetrackingsystem;
  */
 
 public class Bank {
-    protected String bank_name;
-    protected String balance;
+    public String bank_name;
+    public String balance;
 
     public Bank(String bank_name, String balance) {
         this.bank_name = bank_name;

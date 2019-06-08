@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,7 @@ public class DebtManager extends Fragment {
 
 
     private static final int PERMISSION_REQUEST_CODE = 0;
-
+    int opt=0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,15 +105,17 @@ public class DebtManager extends Fragment {
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                                                            PERMISSION_REQUEST_CODE);
+                                                Fragment fragment = new UpdateBalance();
+                                                if (fragment != null) {
+                                                    FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                                                    ft.replace(R.id.content_frame, fragment);
+                                                    ft.commit();
                                                 }
                                             }
                                         }, "OK");
                                 return;
                             } else {
-                                showMessage("The Debt Manager feature requires permission to access your contacts. Please allow the permission to use this feature.\n\nYou can click on the Settings button below or manually navigate to the App Settings and allow this permission. ",
+                                showMessageOkCancel("The Debt Manager feature requires permission to access your contacts. Please allow the permission to use this feature.\n\nYou can click on the Settings button below or manually navigate to the App Settings and allow this permission. ",
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -122,7 +125,6 @@ public class DebtManager extends Fragment {
                                                     Runnable checkSettingOn = new Runnable() {
 
                                                         @Override
-                                                        //@TargetApi(23)
                                                         public void run() {
                                                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                                                                 return;
@@ -131,6 +133,7 @@ public class DebtManager extends Fragment {
                                                                 Intent i = new Intent(getActivity(), MainActivity.class);
                                                                 i.putExtra("frgToLoad", 1);
                                                                 startActivity(i);
+                                                                opt=1;
                                                                 return;
                                                             }
                                                             handler.postDelayed(this, 200);
@@ -141,6 +144,18 @@ public class DebtManager extends Fragment {
                                                     intent.setData(uri);
                                                     handler.postDelayed(checkSettingOn, 1000);
                                                     startActivityForResult(intent, PERMISSION_REQUEST_CODE);
+                                                }
+                                            }
+                                        },
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                Fragment fragment = new UpdateBalance();
+                                                if (fragment != null) {
+                                                    FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                                                    ft.replace(R.id.content_frame, fragment);
+                                                    ft.commit();
                                                 }
                                             }
                                         }, "Settings");
@@ -154,6 +169,17 @@ public class DebtManager extends Fragment {
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if(opt!=1) {
+                Intent i = new Intent(getActivity(), MainActivity.class);
+                startActivity(i);
+            }
+        }
+    }
+
     private void showMessage(String message, DialogInterface.OnClickListener okListener, String btn) {
         new AlertDialog.Builder(getActivity())
                 .setCancelable(false)
@@ -164,6 +190,16 @@ public class DebtManager extends Fragment {
                 .show();
     }
 
+    private void showMessageOkCancel(String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener, String btn) {
+        new AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle("PERMISSION REQUIRED")
+                .setMessage(message)
+                .setPositiveButton(btn, okListener)
+                .setNegativeButton("Cancel", cancelListener)
+                .create()
+                .show();
+    }
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles

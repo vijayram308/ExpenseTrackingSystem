@@ -70,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
                             } else {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 final String uid = user.getUid();
-                                myRef.child(uid).child("Bank_details").child("Wallet").child("Balance").setValue(wBalance);
+                                myRef.child(uid).child("Bank_details").child("Wallet").child("Balance").setValue(Float.parseFloat(wBalance));
                                 myRef.child(uid).child("Bank_details").child("Wallet").child("Name").setValue("Wallet");
                                 myRef.push();
                                 startActivity(new Intent(SignupActivity.this, MainActivity.class));

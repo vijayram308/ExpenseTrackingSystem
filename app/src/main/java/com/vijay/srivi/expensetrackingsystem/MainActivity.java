@@ -129,9 +129,26 @@ public class MainActivity extends AppCompatActivity
             return true;
         }*/
         if (id == R.id.logout) {
-            FirebaseAuth.getInstance().signOut();
-            Intent I = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(I);
+            new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
+                    .setCancelable(false)
+                    .setMessage("Are you sure you want to Logout?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            FirebaseAuth.getInstance().signOut();
+                            Intent I = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(I);
+                        }
+                    })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            })
+                    .create()
+                    .show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -158,11 +175,35 @@ public class MainActivity extends AppCompatActivity
                 fragment = new DebtManager();
                 break;
             case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
-                Intent I = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(I);
-            /*case R.id.nav_share:
-                break;*/
+                new android.support.v7.app.AlertDialog.Builder(MainActivity.this)
+                    .setCancelable(false)
+                    .setMessage("Are you sure you want to Logout?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    FirebaseAuth.getInstance().signOut();
+                                    Intent I = new Intent(MainActivity.this, LoginActivity.class);
+                                    startActivity(I);
+                                }
+                            })
+                        .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            })
+                    .create()
+                    .show();
+            case R.id.nav_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "MFlow");
+                String shareMessage= "\nDownload MFlow by clicking on the below link\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=com.vijay.srivi.expensetrackingsystem" + BuildConfig.APPLICATION_ID +"\n\n";
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                startActivity(Intent.createChooser(shareIntent, "Choose one"));
+                break;
         }
 
         //replacing the fragment
