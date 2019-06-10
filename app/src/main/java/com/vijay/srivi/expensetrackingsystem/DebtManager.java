@@ -1,6 +1,7 @@
 package com.vijay.srivi.expensetrackingsystem;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import static android.app.Activity.RESULT_CANCELED;
+
 /**
  * Created by srivi on 08-05-2019.
  */
@@ -31,6 +35,7 @@ public class DebtManager extends Fragment {
 
 
     private static final int PERMISSION_REQUEST_CODE = 0;
+    private static final int RESULT_OK = 1;
     int opt=0;
     @Nullable
     @Override
@@ -173,9 +178,14 @@ public class DebtManager extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if(opt!=1) {
-                Intent i = new Intent(getActivity(), MainActivity.class);
-                startActivity(i);
+            if (resultCode == RESULT_CANCELED) {
+                Log.d("TESTINGOFF","XYZER");
+                PackageManager packageManager = getContext().getPackageManager();
+                Intent intent = packageManager.getLaunchIntentForPackage(getContext().getPackageName());
+                ComponentName componentName = intent.getComponent();
+                Intent mainIntent = IntentCompat.makeRestartActivityTask(componentName);
+                getContext().startActivity(mainIntent);
+                System.exit(0);
             }
         }
     }

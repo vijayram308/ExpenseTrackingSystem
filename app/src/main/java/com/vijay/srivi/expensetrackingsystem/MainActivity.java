@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int INTENT_AUTHENTICATE = 10;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity
             toggle.syncState();
             NavigationView navigationView = findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
-            int ch = 0;
-            if (getIntent().hasExtra("frgToLoad"))
-                ch = getIntent().getExtras().getInt("frgToLoad");
+            int ch =0;
+            if (getIntent().hasExtra("loadfrmSettings"))
+                ch = getIntent().getExtras().getInt("loadfrmSettings");
             displaySelectedScreen(R.id.nav_upd, ch);
         }
     }
@@ -64,12 +64,14 @@ public class MainActivity extends AppCompatActivity
                 Intent i = new Intent(this, MainActivity.class);
                 i.putExtra("test", 1);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                if (getIntent().hasExtra("frgToLoad")) {
+                    i.putExtra("loadfrmSettings",getIntent().getExtras().getInt("frgToLoad"));
+                }
                 startActivity(i);
-            } else {
-
+            }
+            else {
                 finish();
                 moveTaskToBack(true);
-
             }
         }
     }
@@ -195,12 +197,13 @@ public class MainActivity extends AppCompatActivity
                             })
                     .create()
                     .show();
+                break;
             case R.id.nav_share:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, "MFlow");
-                String shareMessage= "\nDownload MFlow by clicking on the below link\n\n";
-                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=com.vijay.srivi.expensetrackingsystem" + BuildConfig.APPLICATION_ID +"\n\n";
+                String shareMessage= "\nDownload MFlow using this link\n\n";
+                shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                 startActivity(Intent.createChooser(shareIntent, "Choose one"));
                 break;

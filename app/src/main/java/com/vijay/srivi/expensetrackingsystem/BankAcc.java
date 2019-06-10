@@ -35,7 +35,6 @@ public class BankAcc extends Fragment {
         final EditText nm = v.findViewById(R.id.bank_name);
         final EditText bl = v.findViewById(R.id.bank_balance);
         Button b = v.findViewById(R.id.bank_sub);
-
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,13 +42,19 @@ public class BankAcc extends Fragment {
                 if (nm.getText().toString().matches(""))
                     Toast.makeText(getContext(), "Bank Name cannot be empty", Toast.LENGTH_SHORT).show();
                 else if (bl.getText().toString().matches("")) {
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Name").setValue(bnk.bank_name);
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue(0);
+                    String name = nm.getText().toString();
+                    if(!(name.contains("Bank"))||!(name.contains("bank")))
+                        name+= " Bank";
+                    myRef.child(uid).child("Bank_details").child(name).child("Name").setValue(name);
+                    myRef.child(uid).child("Bank_details").child(name).child("Balance").setValue(0);
                     Toast.makeText(getContext(), "Bank Account added with Balance set to 0", Toast.LENGTH_SHORT).show();
                     nm.getText().clear();
                 } else {
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Name").setValue(bnk.bank_name);
-                    myRef.child(uid).child("Bank_details").child(bnk.bank_name).child("Balance").setValue(Float.parseFloat(bnk.balance));
+                    String name = nm.getText().toString();
+                    if(!(name.contains("Bank"))||!(name.contains("bank")))
+                        name+= " Bank";
+                    myRef.child(uid).child("Bank_details").child(name).child("Name").setValue(name);
+                    myRef.child(uid).child("Bank_details").child(name).child("Balance").setValue(Float.parseFloat(bnk.balance));
                     Toast.makeText(getContext(), "Bank Account Added", Toast.LENGTH_SHORT).show();
                     nm.getText().clear();
                     bl.getText().clear();
