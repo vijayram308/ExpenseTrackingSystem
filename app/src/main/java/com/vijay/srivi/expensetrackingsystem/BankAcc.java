@@ -3,6 +3,7 @@ package com.vijay.srivi.expensetrackingsystem;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +44,20 @@ public class BankAcc extends Fragment {
                     Toast.makeText(getContext(), "Bank Name cannot be empty", Toast.LENGTH_SHORT).show();
                 else if (bl.getText().toString().matches("")) {
                     String name = nm.getText().toString();
-                    if(!(name.contains("Bank"))||!(name.contains("bank")))
+                    if(!(name.contains(" Bank"))&&!(name.contains(" bank")))
                         name+= " Bank";
+                    if(name.contains(" bank"))
+                        name.replace(" bank", " Bank");
                     myRef.child(uid).child("Bank_details").child(name).child("Name").setValue(name);
                     myRef.child(uid).child("Bank_details").child(name).child("Balance").setValue(0);
                     Toast.makeText(getContext(), "Bank Account added with Balance set to 0", Toast.LENGTH_SHORT).show();
                     nm.getText().clear();
                 } else {
                     String name = nm.getText().toString();
-                    if(!(name.contains("Bank"))||!(name.contains("bank")))
+                    if(!(name.contains(" Bank"))&&!(name.contains(" bank")))
                         name+= " Bank";
+                    if(name.contains(" bank"))
+                        name.replace(" bank", " Bank");
                     myRef.child(uid).child("Bank_details").child(name).child("Name").setValue(name);
                     myRef.child(uid).child("Bank_details").child(name).child("Balance").setValue(Float.parseFloat(bnk.balance));
                     Toast.makeText(getContext(), "Bank Account Added", Toast.LENGTH_SHORT).show();

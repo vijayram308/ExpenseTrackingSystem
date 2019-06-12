@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_dsh"
+            android:icon="@drawable/ic_dash"
+            android:title="Dashboard" />
+        <item
             android:id="@+id/nav_upd"
             android:icon="@drawable/ic_menu_upd"
             android:title="Update Balance" />

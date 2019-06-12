@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
             int ch =0;
             if (getIntent().hasExtra("loadfrmSettings"))
                 ch = getIntent().getExtras().getInt("loadfrmSettings");
-            displaySelectedScreen(R.id.nav_upd, ch);
+            displaySelectedScreen(R.id.nav_dsh, ch);
         }
     }
 
@@ -164,6 +164,9 @@ public class MainActivity extends AppCompatActivity
             itemId = R.id.nav_dues;
         //initializing the fragment object which is selected
         switch (itemId) {
+            case R.id.nav_dsh:
+                fragment = new DashBoard();
+                break;
             case R.id.nav_upd:
                 fragment = new UpdateBalance();
                 break;
