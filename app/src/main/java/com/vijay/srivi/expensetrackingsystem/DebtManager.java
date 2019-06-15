@@ -110,7 +110,7 @@ public class DebtManager extends Fragment {
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                Fragment fragment = new UpdateBalance();
+                                                Fragment fragment = new DashBoard();
                                                 if (fragment != null) {
                                                     FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                                                     ft.replace(R.id.content_frame, fragment);
@@ -156,7 +156,7 @@ public class DebtManager extends Fragment {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
 
-                                                Fragment fragment = new UpdateBalance();
+                                                Fragment fragment = new DashBoard();
                                                 if (fragment != null) {
                                                     FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                                                     ft.replace(R.id.content_frame, fragment);

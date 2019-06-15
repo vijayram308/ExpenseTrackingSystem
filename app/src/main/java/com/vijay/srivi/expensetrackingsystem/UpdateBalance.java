@@ -42,8 +42,10 @@ public class UpdateBalance extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.frag_upd, container, false);
+        final ConstraintLayout c = v.findViewById(R.id.upd_main);
+        c.setVisibility(View.GONE);
         final Spinner pm = v.findViewById(R.id.pay_mode);
-        createList(pm, v);
+        createList(pm, v, c);
 
         final Spinner typ = v.findViewById(R.id.type);
         final EditText as = v.findViewById(R.id.amount);
@@ -87,7 +89,7 @@ public class UpdateBalance extends Fragment {
                                     Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
-                                    createList(pm, v);
+                                    createList(pm, v, c);
                                 }
                             }
 
@@ -108,7 +110,7 @@ public class UpdateBalance extends Fragment {
                                 Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
                                 as.getText().clear();
                                 dsc.getText().clear();
-                                createList(pm, v);
+                                createList(pm, v, c);
                             }
 
                             @Override
@@ -123,8 +125,9 @@ public class UpdateBalance extends Fragment {
         return v;
     }
 
-    private void createList(final Spinner pm, final View v) {
+    private void createList(final Spinner pm, final View v, final ConstraintLayout c) {
         pay_spinnerList.clear();
+        final ProgressBar pgsBar = v.findViewById(R.id.pBar_upd);
         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,6 +142,8 @@ public class UpdateBalance extends Fragment {
                 ArrayAdapter<String> payAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.simple_spinner_item, pay_spinnerList);
                 payAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 pm.setAdapter(payAdapter);
+                c.setVisibility(View.VISIBLE);
+                pgsBar.setVisibility(View.GONE);
 
             }
 
