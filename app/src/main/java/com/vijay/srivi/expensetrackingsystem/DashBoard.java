@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,6 +53,30 @@ public class DashBoard extends Fragment {
     private void createList(final View v, final ConstraintLayout c) {
         bankList.clear();
         final ProgressBar pgsBar = v.findViewById(R.id.pBar_dsh);
+        (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                float tot_to = 0, tot_by = 0;
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                    float amn = Float.parseFloat(ds.child("amount").getValue().toString());
+                    if(amn>0)
+                        tot_to += amn;
+                    else if(amn<0)
+                        tot_by+=amn;
+                }
+                tot_by *=-1;
+                TextView to = (TextView) v.findViewById(R.id.to_bl);
+                TextView by = (TextView) v.findViewById(R.id.by_bl);
+                to.setText("Rs. " + tot_to);
+                by.setText("Rs. " + tot_by);
+                c.setVisibility(View.VISIBLE);
+                pgsBar.setVisibility(View.GONE);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
