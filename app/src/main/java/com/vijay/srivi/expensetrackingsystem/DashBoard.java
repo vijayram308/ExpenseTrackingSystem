@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +40,26 @@ public class DashBoard extends Fragment {
         final ConstraintLayout c = v.findViewById(R.id.dsh_main);
         c.setVisibility(View.GONE);
         createList(v, c);
-
+        TextView dbt = v.findViewById(R.id.debt_lnk);
+        TextView bl = v.findViewById(R.id.bal_lnk);
+        dbt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new DebtManager();
+                FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();;
+            }
+        });
+        bl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new UpdateBalance();
+                FragmentTransaction ft = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();;
+            }
+        });
         return v;
     }
 
@@ -53,24 +75,30 @@ public class DashBoard extends Fragment {
     private void createList(final View v, final ConstraintLayout c) {
         bankList.clear();
         final ProgressBar pgsBar = v.findViewById(R.id.pBar_dsh);
-        (myRef.child(uid).child("Debt")).addListenerForSingleValueEvent(new ValueEventListener() {
+        final ConstraintLayout cd = v.findViewById(R.id.card_dbt);
+        (myRef.child(uid)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                float tot_to = 0, tot_by = 0;
-                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                    float amn = Float.parseFloat(ds.child("amount").getValue().toString());
-                    if(amn>0)
-                        tot_to += amn;
-                    else if(amn<0)
-                        tot_by+=amn;
+                if(dataSnapshot.hasChild("Debt")==false)
+                {
+                    cd.setVisibility(View.GONE);
                 }
-                tot_by *=-1;
-                TextView to = (TextView) v.findViewById(R.id.to_bl);
-                TextView by = (TextView) v.findViewById(R.id.by_bl);
-                to.setText("Rs. " + tot_to);
-                by.setText("Rs. " + tot_by);
-                c.setVisibility(View.VISIBLE);
-                pgsBar.setVisibility(View.GONE);
+                else {
+                    float tot_to = 0, tot_by = 0;
+                    for (DataSnapshot ds : dataSnapshot.child("Debt").getChildren()) {
+                        float amn = Float.parseFloat(ds.child("amount").getValue().toString());
+                        if (amn > 0)
+                            tot_to += amn;
+                        else if (amn < 0)
+                            tot_by += amn;
+                    }
+                    if (tot_by < 0)
+                        tot_by *= -1;
+                    TextView to = (TextView) v.findViewById(R.id.to_bl);
+                    TextView by = (TextView) v.findViewById(R.id.by_bl);
+                    to.setText("Rs. " + tot_to);
+                    by.setText("Rs. " + tot_by);
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

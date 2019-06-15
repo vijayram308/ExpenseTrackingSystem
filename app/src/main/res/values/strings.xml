@@ -8,6 +8,10 @@
 
     <string name="sign_up"><u>Sign Up</u></string>
     <string name="sign_in"><u>Login</u></string>
+
+    <string name="dbt_mgr"><u>Debt Manager</u></string>
+    <string name="bal"><u>Update Balance</u></string>
+
     <string-array name="pay_mode">
         <item>Wallet</item>
         <item>Bank</item>
