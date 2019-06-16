@@ -28,7 +28,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     public void onBindViewHolder(MyViewHolder holder, int position) {
         System.out.println("Bind [" + holder + "] - Pos [" + position + "]");
         Transaction c = historyList.get(position);
-        holder.amountText.setText(c.amn);
+        holder.amountText.setText(c.amount);
         holder.typeText.setText(c.type);
         holder.typeText.setBackgroundResource(d[position]);
 

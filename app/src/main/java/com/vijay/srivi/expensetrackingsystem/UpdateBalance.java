@@ -1,5 +1,6 @@
 package com.vijay.srivi.expensetrackingsystem;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -68,63 +69,82 @@ public class UpdateBalance extends Fragment {
                     as.requestFocus();
                     return;
                 } else {
-                    t = new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), Float.parseFloat(as.getText().toString()), des, new Date());
-                    Log.d("TEST",""+t.amount);
-                    if ((t.type).equals("Expenditure")) {
-                        (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
-                                x -= t.amount;
-                                if (x < 0) {
-                                    String msg = "Insufficient " + t.pay_mode + " balance";
-                                    Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-                                    as.getText().clear();
-                                    dsc.getText().clear();
-                                } else {
-                                    Transaction t1 =new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), as.getText().toString(), des, new Date());
-                                    myRef.child(uid).child("history").push().setValue(t1);
-                                    myRef.push();
+                    t = new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), Float.toString(Float.parseFloat(as.getText().toString())), des, new Date());
+                    if((t.pay_mode.equals("Wallet")) && (amn.indexOf('.')>=0)) {
+                        showMessageOk(
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                });
+                    }
+                    else {
+                        if ((t.type).equals("Expenditure")) {
+                            (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
+                                    x -= Float.parseFloat(t.amount);
+                                    if (x < 0) {
+                                        String msg = "Insufficient " + t.pay_mode + " balance";
+                                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                                        as.getText().clear();
+                                        dsc.getText().clear();
+                                    } else {
+                                        myRef.child(uid).child("history").push().setValue(t);
+                                        myRef.push();
+                                        myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(Float.toString(x));
+                                        Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
+                                        as.getText().clear();
+                                        dsc.getText().clear();
+                                        createList(pm, v, c);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        } else if ((t.type).equals("Income")) {
+                            myRef.child(uid).child("history").push().setValue(t);
+                            myRef.push();
+                            (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
+                                    x += Float.parseFloat(t.amount);
                                     myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(Float.toString(x));
-                                    Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
                                     createList(pm, v, c);
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    } else if ((t.type).equals("Income")) {
-                        Transaction t1 =new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), as.getText().toString(), des, new Date());
-                        myRef.child(uid).child("history").push().setValue(t1);
-                        myRef.push();
-                        (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
-                                x += t.amount;
-                                myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(Float.toString(x));
-                                Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
-                                as.getText().clear();
-                                dsc.getText().clear();
-                                createList(pm, v, c);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
                 }
             }
         });
         return v;
     }
+
+    private void showMessageOk(DialogInterface.OnClickListener okListener) {
+        new android.support.v7.app.AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle("Wallet Entry Alert")
+                .setMessage("Your physical wallet amount cannot be a decimal value. Please enter a valid amount.")
+                .setPositiveButton("OK", okListener)
+                .create()
+                .show();
+    }
+
 
     private void createList(final Spinner pm, final View v, final ConstraintLayout c) {
         pay_spinnerList.clear();
@@ -166,8 +186,7 @@ public class UpdateBalance extends Fragment {
 class Transaction {
     public String type;
     public String pay_mode;
-    public float amount;
-    public String amn;
+    public String amount;
     public String desc = "";
     public Date dt;
     public String d;
@@ -176,7 +195,7 @@ class Transaction {
     public Transaction(String Pay_mode, String Type, String Amn, String Desc, String D) {
         pay_mode = Pay_mode;
         type = Type;
-        amn = Amn;
+        amount = Amn;
         desc = Desc;
         d = D;
     }
@@ -184,16 +203,16 @@ class Transaction {
     public Transaction(String Pay_mode, String Type, String Amn, String Desc, Date D) {
         pay_mode = Pay_mode;
         type = Type;
-        amn = Amn;
+        amount = Amn;
         desc = Desc;
         dt = D;
     }
-
+/*
     public Transaction(String Pay_mode, String Type, float Amount, String Desc, Date Dt) {
         pay_mode = Pay_mode;
         type = Type;
         amount = Amount;
         desc = Desc;
         dt = Dt;
-    }
+    }*/
 }
