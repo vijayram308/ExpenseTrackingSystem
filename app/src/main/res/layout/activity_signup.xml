@@ -104,7 +104,7 @@
                         android:drawableLeft="@drawable/ic_wallet1"
                         android:drawablePadding="5dp"
                         android:ems="10"
-                        android:hint="Wallet Balance"
+                        android:hint="Physical Wallet Balance"
                         android:inputType="number"
                         tools:layout_editor_absoluteX="87dp"
                         tools:layout_editor_absoluteY="175dp" />
