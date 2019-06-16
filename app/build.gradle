@@ -6,8 +6,8 @@ android {
         applicationId "com.vijay.srivi.expensetrackingsystem"
         minSdkVersion 22
         targetSdkVersion 26
-        versionCode 7
-        versionName "5.0.2"
+        versionCode 8
+        versionName "5.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
