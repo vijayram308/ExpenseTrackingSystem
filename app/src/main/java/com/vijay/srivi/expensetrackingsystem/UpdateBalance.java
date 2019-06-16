@@ -4,8 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,14 +62,14 @@ public class UpdateBalance extends Fragment {
             public void onClick(View view) {
                 final Transaction t;
                 String amn = as.getText().toString();
-                String des = dsc.getText().toString();
+                final String des = dsc.getText().toString();
                 if (amn.matches("")) {
                     as.setError("Please enter the amount");
                     as.requestFocus();
                     return;
                 } else {
-                    t = new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), Integer.parseInt(as.getText().toString()), des, new Date());
-                    //t.format_date(d1);
+                    t = new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), Float.parseFloat(as.getText().toString()), des, new Date());
+                    Log.d("TEST",""+t.amount);
                     if ((t.type).equals("Expenditure")) {
                         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -83,9 +82,10 @@ public class UpdateBalance extends Fragment {
                                     as.getText().clear();
                                     dsc.getText().clear();
                                 } else {
-                                    myRef.child(uid).child("history").push().setValue(t);
+                                    Transaction t1 =new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), as.getText().toString(), des, new Date());
+                                    myRef.child(uid).child("history").push().setValue(t1);
                                     myRef.push();
-                                    myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(x);
+                                    myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(Float.toString(x));
                                     Toast.makeText(getContext(), "Expenditure updated", Toast.LENGTH_SHORT).show();
                                     as.getText().clear();
                                     dsc.getText().clear();
@@ -99,14 +99,15 @@ public class UpdateBalance extends Fragment {
                             }
                         });
                     } else if ((t.type).equals("Income")) {
-                        myRef.child(uid).child("history").push().setValue(t);
+                        Transaction t1 =new Transaction(pm.getSelectedItem().toString(), typ.getSelectedItem().toString(), as.getText().toString(), des, new Date());
+                        myRef.child(uid).child("history").push().setValue(t1);
                         myRef.push();
                         (myRef.child(uid).child("Bank_details")).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 float x = Float.parseFloat(dataSnapshot.child(t.pay_mode).child("Balance").getValue().toString());
                                 x += t.amount;
-                                myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(x);
+                                myRef.child(uid).child("Bank_details").child(t.pay_mode).child("Balance").setValue(Float.toString(x));
                                 Toast.makeText(getContext(), "Income updated", Toast.LENGTH_SHORT).show();
                                 as.getText().clear();
                                 dsc.getText().clear();
@@ -165,7 +166,7 @@ public class UpdateBalance extends Fragment {
 class Transaction {
     public String type;
     public String pay_mode;
-    public int amount;
+    public float amount;
     public String amn;
     public String desc = "";
     public Date dt;
@@ -180,7 +181,15 @@ class Transaction {
         d = D;
     }
 
-    public Transaction(String Pay_mode, String Type, int Amount, String Desc, Date Dt) {
+    public Transaction(String Pay_mode, String Type, String Amn, String Desc, Date D) {
+        pay_mode = Pay_mode;
+        type = Type;
+        amn = Amn;
+        desc = Desc;
+        dt = D;
+    }
+
+    public Transaction(String Pay_mode, String Type, float Amount, String Desc, Date Dt) {
         pay_mode = Pay_mode;
         type = Type;
         amount = Amount;
