@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -41,7 +42,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/name_debt"
-            app:layout_constraintTop_toBottomOf="@+id/name_debt" />
+            app:layout_constraintTop_toBottomOf="@+id/name_debt"
+            app:layout_constraintVertical_bias="0.0" />
 
         <Button
             android:id="@+id/done_btn"
@@ -53,9 +55,9 @@
             android:background="@drawable/roundedbutton_green"
             android:text="Done"
             android:textColor="@android:color/white"
-            app:layout_constraintBottom_toTopOf="@+id/amn_debt"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/amn_debt" />
 
         <ImageButton
             android:id="@+id/alertButton"
@@ -63,11 +65,27 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
             android:src="@drawable/ic_notification"
+            app:layout_constraintBottom_toTopOf="@+id/amn_debt"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/amn_debt" />
+            app:layout_constraintTop_toTopOf="@+id/name_debt" />
+
+        <ImageButton
+            android:id="@+id/alertedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_notification_ring"
+            app:layout_constraintBottom_toTopOf="@+id/amn_debt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/name_debt" />
 
     </android.support.constraint.ConstraintLayout>
 

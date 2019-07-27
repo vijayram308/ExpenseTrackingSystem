@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,20 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 showInputDialog(c);
+            }
+        });
+        holder.alrtBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.alrtBtn.setVisibility(View.GONE);
+                holder.alertedBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        holder.alertedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.alertedBtn.setVisibility(View.GONE);
+                holder.alrtBtn.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -169,6 +184,8 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.MyViewHolder> 
         public TextView amountText;
         //public TextView phText;
         Button doneBtn;
+        ImageButton alrtBtn;
+        ImageButton alertedBtn;
 
         public MyViewHolder(View view) {
             super(view);
@@ -176,6 +193,9 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.MyViewHolder> 
             amountText = view.findViewById(R.id.amn_debt);
             //phText = (TextView) view.findViewById(R.id.ph_debt);
             this.doneBtn = view.findViewById(R.id.done_btn);
+            this.alrtBtn = view.findViewById(R.id.alertButton);
+            this.alertedBtn = view.findViewById(R.id.alertedButton);
+            this.alrtBtn.setVisibility(View.GONE);
         }
     }
 }
